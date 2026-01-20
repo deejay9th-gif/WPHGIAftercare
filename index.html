@@ -1,12 +1,12 @@
 <!-- Chosen Palette: 'Scope & Mucosa' (Navy, Rose, Slate, White) -->
 <!-- Design Logic:
     1.  **Aesthetic**: Endoscopy is the intersection of high-tech scopes (Deep Blue/Navy) and organic tissue (Rose/Pink).
-    2.  **Accessibility First**: Added Text-to-Speech, Font Resizing, and Multi-language support (i18n).
+    2.  **Accessibility First**: Added Text-to-Speech, Font Resizing, Dark Mode, and Multi-language support (i18n).
     3.  **Elderly Friendly**: Larger touch targets, clearer contrast, and simplified navigation.
 -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,8 +14,21 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        urdu: ['Noto Nastaliq Urdu', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; color: #334155; transition: font-size 0.2s ease; }
+        body { transition: background-color 0.3s ease, color 0.3s ease, font-size 0.2s ease; }
         
         /* Urdu/Arabic Font Support */
         body[dir="rtl"] { font-family: 'Noto Nastaliq Urdu', 'Inter', serif; }
@@ -27,6 +40,14 @@
         body.text-large h1 { font-size: 2.5rem; }
         body.text-large h2 { font-size: 2.25rem; }
         body.text-large button { padding: 1.5rem; }
+
+        /* Print Styles */
+        @media print {
+            header, .no-print { display: none !important; }
+            body { background: white; color: black; font-size: 12pt; }
+            .card, section { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+            .chart-container { display: none; }
+        }
 
         /* Chart Container Styling */
         .chart-container {
@@ -45,7 +66,6 @@
 
         /* Organic Card Styles */
         .card {
-            background: white;
             border-radius: 1.5rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
             transition: all 0.3s ease;
@@ -94,7 +114,7 @@
         }
     </style>
 </head>
-<body class="antialiased selection:bg-rose-200 selection:text-rose-900">
+<body class="antialiased bg-slate-50 text-slate-700 dark:bg-slate-900 dark:text-slate-300 selection:bg-rose-200 selection:text-rose-900">
 
     <!-- Header -->
     <header class="bg-gradient-to-r from-slate-900 via-blue-900 to-rose-500 text-white shadow-xl sticky top-0 z-50">
@@ -118,15 +138,28 @@
                         <button onclick="toggleTextSize()" class="w-10 h-10 rounded-full bg-white/20 text-white font-bold flex items-center justify-center border border-white/30" aria-label="Increase Text Size">
                             A+
                         </button>
+                        <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full bg-white/20 text-white font-bold flex items-center justify-center border border-white/30" aria-label="Toggle Dark Mode">
+                            🌙
+                        </button>
                     </div>
                 </div>
 
                 <!-- Desktop/Tablet Controls -->
                 <div class="flex flex-wrap items-center gap-3 justify-center">
+                    
+                    <button onclick="window.print()" class="bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg text-sm font-medium border border-white/20 flex items-center gap-2 transition">
+                        <span>🖨</span> <span class="hidden sm:inline">Print / Save PDF</span>
+                    </button>
+
                     <!-- Text Size Toggle -->
                     <div class="hidden lg:flex bg-white/10 rounded-full p-1 border border-white/20 backdrop-blur-sm">
-                        <button onclick="toggleTextSize()" class="px-4 py-1 rounded-full hover:bg-white/20 transition text-sm font-medium" data-i18n="text_size_btn">Text Size: Normal/Large</button>
+                        <button onclick="toggleTextSize()" class="px-4 py-1 rounded-full hover:bg-white/20 transition text-sm font-medium" data-i18n="text_size_btn">Text Size: A- / A+</button>
                     </div>
+
+                    <!-- Dark Mode Toggle -->
+                    <button onclick="toggleDarkMode()" class="hidden lg:flex bg-white/10 hover:bg-white/20 text-white w-9 h-9 items-center justify-center rounded-full border border-white/20 transition" aria-label="Dark Mode">
+                        🌙
+                    </button>
 
                     <!-- Language Selector -->
                     <div class="relative">
@@ -150,50 +183,82 @@
 
         <!-- Intro -->
         <section class="text-center max-w-3xl mx-auto">
-            <h2 class="text-3xl font-bold text-slate-800 mb-4" data-i18n="intro_title">Post-Procedural Care</h2>
-            <p class="text-lg text-slate-600 leading-relaxed" data-i18n="intro_desc">
+            <h2 class="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-4" data-i18n="intro_title">Post-Procedural Care</h2>
+            <p class="text-lg text-slate-600 dark:text-slate-300 leading-relaxed" data-i18n="intro_desc">
                 Your digestive tract needs time to settle. Use this guide to distinguish between normal <strong class="text-rose-600">post-procedure symptoms</strong> and signs that need attention.
             </p>
         </section>
 
-        <!-- Section 1: Recovery Timeline (Chart) -->
+        <!-- Section 1: Recovery Timeline (Interactive) -->
         <section class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
             <div class="lg:col-span-1">
-                <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 h-full flex flex-col justify-center">
-                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
-                        <span class="bg-blue-100 text-blue-700 p-2 rounded-lg mr-3 text-sm">💤</span> <span data-i18n="sedation_title">Sedation Levels</span>
+                <div class="card bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-100 dark:border-slate-700 h-full flex flex-col justify-center">
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center">
+                        <span class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 p-2 rounded-lg mr-3 text-sm">💤</span> <span data-i18n="sedation_title">Sedation Levels</span>
                     </h3>
-                    <p class="text-sm text-slate-600 mb-6" data-i18n="sedation_desc">
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-6" data-i18n="sedation_desc">
                         If you had sedation (Midazolam/Fentanyl), the drugs remain in your blood long after you feel awake.
                     </p>
                     <div class="space-y-4">
-                        <div class="flex items-center text-sm p-3 bg-slate-50 rounded-xl">
-                            <span class="w-3 h-3 rounded-full bg-emerald-500 mr-3 shadow-sm shadow-emerald-500/50"></span>
+                        <div class="flex items-center text-sm p-3 bg-slate-50 dark:bg-slate-700 rounded-xl border-l-4 border-emerald-500">
                             <div>
-                                <strong class="block text-slate-800" data-i18n="spray_label">Throat Spray</strong>
-                                <span class="text-slate-500 text-xs" data-i18n="spray_desc">Numbness fades in 60 mins</span>
+                                <strong class="block text-slate-800 dark:text-slate-100" data-i18n="spray_label">Throat Spray</strong>
+                                <span class="text-slate-500 dark:text-slate-400 text-xs" data-i18n="spray_desc">Numbness fades in 60 mins</span>
                             </div>
                         </div>
-                        <div class="flex items-center text-sm p-3 bg-slate-50 rounded-xl">
-                            <span class="w-3 h-3 rounded-full bg-cyan-500 mr-3 shadow-sm shadow-cyan-500/50"></span>
+                        <div class="flex items-center text-sm p-3 bg-slate-50 dark:bg-slate-700 rounded-xl border-l-4 border-cyan-500">
                             <div>
-                                <strong class="block text-slate-800" data-i18n="gas_label">Entonox (Gas & Air)</strong>
-                                <span class="text-slate-500 text-xs" data-i18n="gas_desc">Leaves system in 30 mins</span>
+                                <strong class="block text-slate-800 dark:text-slate-100" data-i18n="gas_label">Entonox (Gas & Air)</strong>
+                                <span class="text-slate-500 dark:text-slate-400 text-xs" data-i18n="gas_desc">Leaves system in 30 mins</span>
                             </div>
                         </div>
-                        <div class="flex items-center text-sm p-3 bg-blue-50 rounded-xl border border-blue-100">
-                            <span class="w-3 h-3 rounded-full bg-blue-700 mr-3 shadow-sm shadow-blue-700/50"></span>
+                        <div class="flex items-center text-sm p-3 bg-blue-50 dark:bg-blue-900/30 rounded-xl border border-blue-100 dark:border-blue-800 border-l-4 border-l-blue-600">
                             <div>
-                                <strong class="block text-blue-900" data-i18n="iv_label">IV Sedation</strong>
-                                <span class="text-blue-700 text-xs font-bold" data-i18n="iv_desc">24-hour impairment</span>
+                                <strong class="block text-blue-900 dark:text-blue-100" data-i18n="iv_label">IV Sedation</strong>
+                                <span class="text-blue-700 dark:text-blue-300 text-xs font-bold" data-i18n="iv_desc">24-hour impairment</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="lg:col-span-2 bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                <div class="chart-container">
-                    <canvas id="recoveryChart" aria-label="Line chart showing recovery time based on sedation type" role="img"></canvas>
+            
+            <!-- Interactive Recovery Slider -->
+            <div class="lg:col-span-2 card bg-white dark:bg-slate-800 p-8 shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
+                <div class="mb-8 text-center">
+                    <h4 class="text-lg font-bold text-slate-700 dark:text-slate-200 mb-2" data-i18n="recovery_instruction">Drag slider to see recovery over time</h4>
+                    <div class="text-4xl font-bold text-blue-600 dark:text-blue-400 font-mono mt-2" id="timeDisplay">0 Hours</div>
+                </div>
+
+                <div class="relative mb-10 px-4">
+                    <input type="range" id="recoverySlider" min="0" max="4" step="1" value="0" oninput="updateRecoveryState(this.value)" class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600 dark:bg-slate-700">
+                    <div class="flex justify-between text-xs text-slate-400 mt-2 font-medium">
+                        <span>Procedure</span>
+                        <span>30m</span>
+                        <span>1h</span>
+                        <span>12h</span>
+                        <span>24h+</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Dynamic Status Cards -->
+                    <div id="status-spray" class="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 transition-colors duration-300 text-center">
+                        <div class="text-2xl mb-2">💊</div>
+                        <div class="font-bold text-sm text-slate-700 dark:text-slate-200">Throat Spray</div>
+                        <div class="text-xs font-bold text-red-600 dark:text-red-400 uppercase mt-1 status-text">Numb / Unsafe</div>
+                    </div>
+                    
+                    <div id="status-gas" class="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 transition-colors duration-300 text-center">
+                        <div class="text-2xl mb-2">💨</div>
+                        <div class="font-bold text-sm text-slate-700 dark:text-slate-200">Gas & Air</div>
+                        <div class="text-xs font-bold text-red-600 dark:text-red-400 uppercase mt-1 status-text">Woozy</div>
+                    </div>
+
+                    <div id="status-iv" class="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 transition-colors duration-300 text-center">
+                        <div class="text-2xl mb-2">💉</div>
+                        <div class="font-bold text-sm text-slate-700 dark:text-slate-200">IV Sedation</div>
+                        <div class="text-xs font-bold text-red-600 dark:text-red-400 uppercase mt-1 status-text">Impaired</div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -209,6 +274,15 @@
                 <p class="text-slate-300 mt-2 max-w-2xl mx-auto text-sm" data-i18n="protocol_desc">
                     Essential restrictions for patients who received Intravenous Sedation.
                 </p>
+            </div>
+
+            <!-- Mandatory Supervision Warning -->
+            <div class="relative z-10 bg-rose-500/20 border border-rose-400/50 p-4 rounded-2xl mb-8 flex flex-col md:flex-row items-center md:items-start gap-4 text-center md:text-left backdrop-blur-sm">
+                <div class="text-3xl bg-rose-500 rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">👥</div>
+                <div>
+                    <h4 class="font-bold text-rose-100 text-lg" data-i18n="supervision_title">Mandatory Supervision Required</h4>
+                    <p class="text-rose-200/90 text-sm leading-relaxed" data-i18n="supervision_desc">You must have a responsible adult stay with you for the full 24 hours to help you. You are not allowed to be alone during this recovery period.</p>
+                </div>
             </div>
             
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4 relative z-10">
@@ -235,11 +309,30 @@
             </div>
         </section>
 
+        <!-- New Section: Medication Only -->
+        <div class="max-w-2xl mx-auto w-full">
+            <!-- Medication Resume -->
+            <section class="card bg-white dark:bg-slate-800 p-6 border border-slate-100 dark:border-slate-700">
+                <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center">
+                    <span class="mr-2">💊</span> Medication Guide
+                </h3>
+                
+                <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800">
+                    <strong class="text-blue-800 dark:text-blue-300 block mb-2">When to Resume?</strong>
+                    <ul class="text-sm text-blue-700 dark:text-blue-200 space-y-2">
+                        <li><strong>Regular Meds:</strong> Resume next day unless told otherwise.</li>
+                        <li><strong>Diabetes:</strong> Resume insulin/tablets once eating normally.</li>
+                        <li><strong>Blood Thinners:</strong> Check your discharge sheet strictly.</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
         <!-- Section 3: Anatomical Symptom Checker -->
         <section>
             <div class="mb-6">
-                <h3 class="text-2xl font-bold text-slate-800" data-i18n="checker_title">Symptom Checker</h3>
-                <p class="text-slate-600" data-i18n="checker_desc">Select what you are feeling based on your procedure area.</p>
+                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100" data-i18n="checker_title">Symptom Checker</h3>
+                <p class="text-slate-600 dark:text-slate-400" data-i18n="checker_desc">Select what you are feeling based on your procedure area.</p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -247,52 +340,64 @@
                 <div class="lg:col-span-5 space-y-6">
                     
                     <!-- Upper GI Group -->
-                    <div class="bg-white p-2 rounded-2xl border border-slate-100 shadow-sm">
-                        <h4 class="px-4 py-2 font-bold text-rose-900 text-sm uppercase tracking-wide flex items-center bg-rose-50/50 rounded-xl mb-2" data-i18n="group_upper">
+                    <div class="card bg-white dark:bg-slate-800 p-2 border border-slate-100 dark:border-slate-700 shadow-sm">
+                        <h4 class="px-4 py-2 font-bold text-rose-900 dark:text-rose-200 text-sm uppercase tracking-wide flex items-center bg-rose-50 dark:bg-rose-900/30 rounded-xl mb-2" data-i18n="group_upper">
                             <span class="mr-2">👄</span> Upper GI (Gastroscopy)
                         </h4>
                         <div class="space-y-2">
-                            <button onclick="checkSymptom('throat')" class="symptom-btn upper-gi-btn w-full text-left px-4 py-3 rounded-xl bg-slate-50 border border-transparent text-slate-700 font-medium text-lg flex items-center">
+                            <button onclick="checkSymptom('throat')" class="symptom-btn upper-gi-btn w-full text-left px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-transparent dark:border-slate-600 text-slate-700 dark:text-slate-200 font-medium text-lg flex items-center">
                                 <span class="w-8 text-center mr-3 text-2xl">🍬</span> <span data-i18n="sym_throat">Sore Throat / Hoarse</span>
                             </button>
-                            <button onclick="checkSymptom('chest_pain')" class="symptom-btn upper-gi-btn w-full text-left px-4 py-3 rounded-xl bg-slate-50 border border-transparent text-slate-700 font-medium text-lg flex items-center">
+                            <button onclick="checkSymptom('chest_pain')" class="symptom-btn upper-gi-btn w-full text-left px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-transparent dark:border-slate-600 text-slate-700 dark:text-slate-200 font-medium text-lg flex items-center">
                                 <span class="w-8 text-center mr-3 text-2xl">🫁</span> <span data-i18n="sym_chest">Mild Chest Discomfort</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- Lower GI Group -->
-                    <div class="bg-white p-2 rounded-2xl border border-slate-100 shadow-sm">
-                        <h4 class="px-4 py-2 font-bold text-blue-900 text-sm uppercase tracking-wide flex items-center bg-blue-50/50 rounded-xl mb-2" data-i18n="group_lower">
+                    <div class="card bg-white dark:bg-slate-800 p-2 border border-slate-100 dark:border-slate-700 shadow-sm">
+                        <h4 class="px-4 py-2 font-bold text-blue-900 dark:text-blue-200 text-sm uppercase tracking-wide flex items-center bg-blue-50 dark:bg-blue-900/30 rounded-xl mb-2" data-i18n="group_lower">
                             <span class="mr-2">🧬</span> Lower GI (Colonoscopy)
                         </h4>
                         <div class="space-y-2">
-                            <button onclick="checkSymptom('bloating')" class="symptom-btn lower-gi-btn w-full text-left px-4 py-3 rounded-xl bg-slate-50 border border-transparent text-slate-700 font-medium text-lg flex items-center">
+                            <button onclick="checkSymptom('bloating')" class="symptom-btn lower-gi-btn w-full text-left px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-transparent dark:border-slate-600 text-slate-700 dark:text-slate-200 font-medium text-lg flex items-center">
                                 <span class="w-8 text-center mr-3 text-2xl">🎈</span> <span data-i18n="sym_bloat">Bloating / Trapped Wind</span>
                             </button>
-                            <button onclick="checkSymptom('cramps')" class="symptom-btn lower-gi-btn w-full text-left px-4 py-3 rounded-xl bg-slate-50 border border-transparent text-slate-700 font-medium text-lg flex items-center">
+                            <button onclick="checkSymptom('cramps')" class="symptom-btn lower-gi-btn w-full text-left px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-transparent dark:border-slate-600 text-slate-700 dark:text-slate-200 font-medium text-lg flex items-center">
                                 <span class="w-8 text-center mr-3 text-2xl">⚡</span> <span data-i18n="sym_cramp">Spasms / Cramps</span>
                             </button>
-                            <button onclick="checkSymptom('bleeding_mild')" class="symptom-btn lower-gi-btn w-full text-left px-4 py-3 rounded-xl bg-slate-50 border border-transparent text-slate-700 font-medium text-lg flex items-center">
+                            <button onclick="checkSymptom('bleeding_mild')" class="symptom-btn lower-gi-btn w-full text-left px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-transparent dark:border-slate-600 text-slate-700 dark:text-slate-200 font-medium text-lg flex items-center">
                                 <span class="w-8 text-center mr-3 text-2xl">🩸</span> <span data-i18n="sym_spot">Spotting on Tissue</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- Red Flags -->
-                    <div class="bg-red-50 p-2 rounded-2xl border border-red-100 shadow-sm">
-                        <h4 class="px-4 py-2 font-bold text-red-900 text-sm uppercase tracking-wide flex items-center mb-2" data-i18n="group_urgent">
+                    <div class="bg-red-50 dark:bg-red-900/20 p-2 rounded-2xl border border-red-100 dark:border-red-800 shadow-sm">
+                        <h4 class="px-4 py-2 font-bold text-red-900 dark:text-red-200 text-sm uppercase tracking-wide flex items-center mb-2" data-i18n="group_urgent">
                             <span class="mr-2">🚨</span> Warning Signs
                         </h4>
                         <div class="space-y-2">
-                            <button onclick="checkSymptom('bleeding_heavy')" class="symptom-btn urgent-btn w-full text-left px-4 py-3 rounded-xl bg-white border border-red-100 text-red-800 font-medium text-lg">
+                            <button onclick="checkSymptom('bleeding_heavy')" class="symptom-btn urgent-btn w-full text-left px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-red-100 dark:border-red-800 text-red-800 dark:text-red-300 font-medium text-lg">
                                 <span data-i18n="sym_heavy">Large Bleeding / Black Stools</span>
                             </button>
-                            <button onclick="checkSymptom('severe_pain')" class="symptom-btn urgent-btn w-full text-left px-4 py-3 rounded-xl bg-white border border-red-100 text-red-800 font-medium text-lg">
+                            <button onclick="checkSymptom('severe_pain')" class="symptom-btn urgent-btn w-full text-left px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-red-100 dark:border-red-800 text-red-800 dark:text-red-300 font-medium text-lg">
                                 <span data-i18n="sym_severe">Severe Pain / Rigid Tummy</span>
                             </button>
-                            <button onclick="checkSymptom('fever')" class="symptom-btn urgent-btn w-full text-left px-4 py-3 rounded-xl bg-white border border-red-100 text-red-800 font-medium text-lg">
+                             <button onclick="checkSymptom('fever')" class="symptom-btn urgent-btn w-full text-left px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-red-100 dark:border-red-800 text-red-800 dark:text-red-300 font-medium text-lg">
                                 <span data-i18n="sym_fever">Fever / Shivers</span>
+                            </button>
+                            <button onclick="checkSymptom('vomiting')" class="symptom-btn urgent-btn w-full text-left px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-red-100 dark:border-red-800 text-red-800 dark:text-red-300 font-medium text-lg">
+                                <span>🤮 Vomiting Blood / Persistent</span>
+                            </button>
+                             <button onclick="checkSymptom('breathing')" class="symptom-btn urgent-btn w-full text-left px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-red-100 dark:border-red-800 text-red-800 dark:text-red-300 font-medium text-lg">
+                                <span>🫁 Difficulty Breathing</span>
+                            </button>
+                             <button onclick="checkSymptom('neck')" class="symptom-btn urgent-btn w-full text-left px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-red-100 dark:border-red-800 text-red-800 dark:text-red-300 font-medium text-lg">
+                                <span>🧣 Neck Swelling</span>
+                            </button>
+                             <button onclick="checkSymptom('dysphagia')" class="symptom-btn urgent-btn w-full text-left px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-red-100 dark:border-red-800 text-red-800 dark:text-red-300 font-medium text-lg">
+                                <span>🥣 Difficulty Swallowing (Dysphagia)</span>
                             </button>
                         </div>
                     </div>
@@ -300,13 +405,13 @@
 
                 <!-- Dynamic Output -->
                 <div class="lg:col-span-7">
-                    <div id="symptom-result" aria-live="polite" class="h-full bg-white rounded-3xl shadow-lg border border-slate-100 p-8 flex flex-col justify-center items-center text-center transition-all duration-500 relative overflow-hidden min-h-[300px]">
+                    <div id="symptom-result" aria-live="polite" class="h-full bg-white dark:bg-slate-800 rounded-3xl shadow-lg border border-slate-100 dark:border-slate-700 p-8 flex flex-col justify-center items-center text-center transition-all duration-500 relative overflow-hidden min-h-[300px]">
                         <!-- Default State -->
-                        <div class="absolute inset-0 bg-slate-50/50 pattern-grid-lg opacity-20"></div>
+                        <div class="absolute inset-0 bg-slate-50/50 dark:bg-slate-900/20 pattern-grid-lg opacity-20"></div>
                         <div class="relative z-10">
                             <div class="text-6xl mb-6 opacity-80">🩺</div>
-                            <h4 class="text-2xl font-bold text-slate-400" data-i18n="result_placeholder_title">Select a symptom</h4>
-                            <p class="text-slate-400 mt-2 text-sm" data-i18n="result_placeholder_desc">Advice is grouped by anatomy for clarity.</p>
+                            <h4 class="text-2xl font-bold text-slate-400 dark:text-slate-500" data-i18n="result_placeholder_title">Select a symptom</h4>
+                            <p class="text-slate-400 dark:text-slate-500 mt-2 text-sm" data-i18n="result_placeholder_desc">Advice is grouped by anatomy for clarity.</p>
                         </div>
                     </div>
                 </div>
@@ -314,8 +419,8 @@
         </section>
 
         <!-- Section 4: Visual Duration -->
-        <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-            <h3 class="text-xl font-bold text-slate-800 mb-4" data-i18n="timeline_title">Symptom Timeline</h3>
+        <section class="card bg-white dark:bg-slate-800 p-8 shadow-sm border border-slate-100 dark:border-slate-700">
+            <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4" data-i18n="timeline_title">Symptom Timeline</h3>
             <div class="chart-container" style="height: 300px;">
                 <canvas id="durationChart" aria-label="Bar chart showing duration of common symptoms" role="img"></canvas>
             </div>
@@ -353,6 +458,25 @@
                         <span class="mr-2 opacity-50 group-hover:opacity-100">🖌</span> <span data-i18n="check_dye">Dye Spray</span>
                     </span>
                 </label>
+                <!-- New Items -->
+                <label class="cursor-pointer group">
+                    <input type="checkbox" onchange="toggleInstruction('hpylori')" class="peer sr-only">
+                    <span class="px-4 py-3 rounded-full border border-slate-600 bg-slate-800 peer-checked:bg-yellow-600 peer-checked:border-yellow-500 peer-checked:text-white transition-all text-base font-medium flex items-center">
+                        <span class="mr-2 opacity-50 group-hover:opacity-100">🦠</span> <span data-i18n="check_hpylori">H. Pylori Test</span>
+                    </span>
+                </label>
+                <label class="cursor-pointer group">
+                    <input type="checkbox" onchange="toggleInstruction('banding')" class="peer sr-only">
+                    <span class="px-4 py-3 rounded-full border border-slate-600 bg-slate-800 peer-checked:bg-red-600 peer-checked:border-red-500 peer-checked:text-white transition-all text-base font-medium flex items-center">
+                        <span class="mr-2 opacity-50 group-hover:opacity-100">⭕</span> <span data-i18n="check_banding">Banding</span>
+                    </span>
+                </label>
+                <label class="cursor-pointer group">
+                    <input type="checkbox" onchange="toggleInstruction('stent')" class="peer sr-only">
+                    <span class="px-4 py-3 rounded-full border border-slate-600 bg-slate-800 peer-checked:bg-indigo-600 peer-checked:border-indigo-500 peer-checked:text-white transition-all text-base font-medium flex items-center">
+                        <span class="mr-2 opacity-50 group-hover:opacity-100">🚇</span> <span data-i18n="check_stent">Stent</span>
+                    </span>
+                </label>
             </div>
 
             <div id="instruction-panel" class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -372,38 +496,52 @@
                     <h5 class="font-bold text-cyan-300 mb-2" data-i18n="info_dye_title">Methylene Blue / Tattoo</h5>
                     <p class="text-sm leading-relaxed" data-i18n="info_dye_text">Blue dye was used to highlight cells. Your urine or stool may turn blue/green for 24 hours. This is harmless and expected.</p>
                 </div>
+                
+                <!-- New Info Panels -->
+                <div id="hpylori-info" class="hidden-content bg-slate-800 p-5 rounded-2xl border border-slate-700">
+                    <h5 class="font-bold text-yellow-300 mb-2" data-i18n="info_hpylori_title">H. Pylori (CLO Test)</h5>
+                    <p class="text-sm leading-relaxed" data-i18n="info_hpylori_text">A test for stomach bacteria was performed. Results go to your GP in 1-2 weeks. If positive, you will need a course of antibiotics.</p>
+                </div>
+                <div id="banding-info" class="hidden-content bg-slate-800 p-5 rounded-2xl border border-slate-700">
+                    <h5 class="font-bold text-red-300 mb-2" data-i18n="info_banding_title">Banding of Piles</h5>
+                    <p class="text-sm leading-relaxed" data-i18n="info_banding_text">Rubber bands were used. A dull ache or feeling of needing to pass wind is common. Minor bleeding may occur when bands fall off (10-14 days).</p>
+                </div>
+                <div id="stent-info" class="hidden-content bg-slate-800 p-5 rounded-2xl border border-slate-700">
+                    <h5 class="font-bold text-indigo-300 mb-2" data-i18n="info_stent_title">Stent Insertion</h5>
+                    <p class="text-sm leading-relaxed" data-i18n="info_stent_text">A metal tube keeps the gut open. <br>• Chew food very thoroughly.<br>• Eat a soft/sloppy diet.<br>• Fizzy drinks can help keep the tube clean.</p>
+                </div>
             </div>
         </section>
 
         <!-- Contacts -->
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="card p-6 border-l-8 border-blue-600">
-                <h3 class="font-bold text-lg mb-4 text-slate-800" data-i18n="contact_unit">Direct Unit Lines (9-5)</h3>
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 no-print">
+            <div class="card bg-white dark:bg-slate-800 p-6 border-l-8 border-blue-600">
+                <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-slate-100" data-i18n="contact_unit">Direct Unit Lines (9-5)</h3>
                 <ul class="space-y-4 text-lg">
                     <li class="flex justify-between items-center">
-                        <span class="text-slate-600">Wexham Park</span>
-                        <a href="tel:03006154163" class="bg-blue-50 text-blue-700 px-4 py-2 rounded-lg font-mono font-bold hover:bg-blue-100" aria-label="Call Wexham Park">0300 615 4163</a>
+                        <span class="text-slate-600 dark:text-slate-400">Wexham Park</span>
+                        <a href="tel:03006154163" class="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 px-4 py-2 rounded-lg font-mono font-bold hover:bg-blue-100 dark:hover:bg-blue-800" aria-label="Call Wexham Park">0300 615 4163</a>
                     </li>
                     <li class="flex justify-between items-center">
-                        <span class="text-slate-600">Heatherwood</span>
-                        <a href="tel:03006144020" class="bg-blue-50 text-blue-700 px-4 py-2 rounded-lg font-mono font-bold hover:bg-blue-100" aria-label="Call Heatherwood">0300 614 4020</a>
+                        <span class="text-slate-600 dark:text-slate-400">Heatherwood</span>
+                        <a href="tel:03006144020" class="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 px-4 py-2 rounded-lg font-mono font-bold hover:bg-blue-100 dark:hover:bg-blue-800" aria-label="Call Heatherwood">0300 614 4020</a>
                     </li>
                     <li class="flex justify-between items-center">
-                        <span class="text-slate-600">Frimley Park</span>
-                        <a href="tel:03006136045" class="bg-blue-50 text-blue-700 px-4 py-2 rounded-lg font-mono font-bold hover:bg-blue-100" aria-label="Call Frimley Park">0300 613 6045</a>
+                        <span class="text-slate-600 dark:text-slate-400">Frimley Park</span>
+                        <a href="tel:03006136045" class="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 px-4 py-2 rounded-lg font-mono font-bold hover:bg-blue-100 dark:hover:bg-blue-800" aria-label="Call Frimley Park">0300 613 6045</a>
                     </li>
                 </ul>
             </div>
-            <div class="card p-6 border-l-8 border-rose-500 bg-rose-50/50">
-                <h3 class="font-bold text-lg mb-4 text-rose-900" data-i18n="contact_urgent">Emergency (Out of Hours)</h3>
+            <div class="card bg-rose-50 dark:bg-rose-900/20 p-6 border-l-8 border-rose-500">
+                <h3 class="font-bold text-lg mb-4 text-rose-900 dark:text-rose-100" data-i18n="contact_urgent">Emergency (Out of Hours)</h3>
                 <div class="space-y-4">
-                    <div class="bg-white p-4 rounded-xl border border-rose-100 shadow-sm">
-                        <p class="text-xs text-slate-500 uppercase font-bold mb-1">Frimley (Surgical Assessment)</p>
-                        <a href="tel:07990528061" class="text-rose-600 font-mono font-bold text-xl block" aria-label="Call Frimley Emergency">07990 528 061</a>
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-rose-100 dark:border-rose-900 shadow-sm">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold mb-1">Frimley (Surgical Assessment)</p>
+                        <a href="tel:07990528061" class="text-rose-600 dark:text-rose-400 font-mono font-bold text-xl block" aria-label="Call Frimley Emergency">07990 528 061</a>
                     </div>
-                    <div class="bg-white p-4 rounded-xl border border-rose-100 shadow-sm">
-                        <p class="text-xs text-slate-500 uppercase font-bold mb-1">Wexham (Ward 11)</p>
-                        <a href="tel:07826921319" class="text-rose-600 font-mono font-bold text-xl block" aria-label="Call Wexham Emergency">07826 921 319</a>
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-rose-100 dark:border-rose-900 shadow-sm">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold mb-1">Wexham (Ward 11)</p>
+                        <a href="tel:07826921319" class="text-rose-600 dark:text-rose-400 font-mono font-bold text-xl block" aria-label="Call Wexham Emergency">07826 921 319</a>
                     </div>
                 </div>
             </div>
@@ -411,7 +549,7 @@
 
     </main>
 
-    <footer class="bg-white border-t border-slate-200 py-10 mt-12">
+    <footer class="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 py-10 mt-12">
         <div class="container mx-auto px-4 text-center">
             <p class="text-slate-400 text-sm">© Frimley Health NHS Foundation Trust</p>
             <p class="text-slate-500 text-sm mt-2 font-medium">Co-developed by Darryl James Tolentino, Junior Charge Nurse, Wexham Park Hospital</p>
@@ -464,6 +602,15 @@
                 check_polyp: "Polyps/Clips",
                 check_stretch: "Stretch/Dilatation",
                 check_dye: "Dye Spray",
+                check_hpylori: "H. Pylori Test",
+                check_banding: "Hemorrhoid Banding",
+                check_stent: "Stent Insertion",
+                recovery_instruction: "Drag slider to check recovery status:",
+                supervision_title: "Mandatory Supervision Required",
+                supervision_desc: "You must have a responsible adult stay with you for the full 24 hours to help you. You are not allowed to be alone.",
+                status_unsafe: "Unsafe / Impaired",
+                status_safe: "Safe / Normal",
+                status_woozy: "Woozy / Caution",
                 info_biopsy_title: "Biopsy Samples",
                 info_biopsy_text: "Samples have been sent to the lab. Results typically take 2–6 weeks. Your GP or consultant will contact you.",
                 info_polyp_title: "Polypectomy Clips",
@@ -472,6 +619,12 @@
                 info_dilatation_text: "Strict Diet: 0-4 hrs Cold fluids only. 24 hrs No hot drinks. 3-5 days Soft diet.",
                 info_dye_title: "Methylene Blue / Tattoo",
                 info_dye_text: "Blue dye was used. Your urine or stool may turn blue/green for 24 hours. Harmless.",
+                info_hpylori_title: "H. Pylori (CLO Test)",
+                info_hpylori_text: "Test for bacteria. Results with GP in 1-2 weeks. If positive, requires antibiotics.",
+                info_banding_title: "Banding of Piles",
+                info_banding_text: "Bands fall off in 10-14 days causing minor bleeding. Dull ache is common.",
+                info_stent_title: "Stent Placement",
+                info_stent_text: "Chew food well. Soft diet only. Fizzy drinks help keep it clean.",
                 contact_unit: "Direct Unit Lines (9-5)",
                 contact_urgent: "Emergency (Out of Hours)",
                 call_emergency_btn: "Call 111 or Emergency Unit",
@@ -493,6 +646,12 @@
                 iv_desc: "24 ਘੰਟੇ ਦੀ ਪਰਹੇਜ਼",
                 protocol_title: "24 ਘੰਟੇ ਦਾ ਪ੍ਰੋਟੋਕੋਲ",
                 protocol_desc: "IV ਬੇਹੋਸ਼ੀ ਵਾਲੇ ਮਰੀਜ਼ਾਂ ਲਈ ਜ਼ਰੂਰੀ ਪਾਬੰਦੀਆਂ।",
+                recovery_instruction: "ਰਿਕਵਰੀ ਸਥਿਤੀ ਦੇਖਣ ਲਈ ਸਲਾਈਡਰ ਨੂੰ ਖਿੱਚੋ:",
+                supervision_title: "ਲਾਜ਼ਮੀ ਨਿਗਰਾਨੀ",
+                supervision_desc: "ਤੁਹਾਡੇ ਕੋਲ 24 ਘੰਟਿਆਂ ਲਈ ਇੱਕ ਜ਼ਿੰਮੇਵਾਰ ਬਾਲਗ ਹੋਣਾ ਲਾਜ਼ਮੀ ਹੈ। ਤੁਸੀਂ ਇਕੱਲੇ ਨਹੀਂ ਰਹਿ ਸਕਦੇ।",
+                status_unsafe: "ਅਸੁਰੱਖਿਅਤ / ਖਰਾਬ",
+                status_safe: "ਸੁਰੱਖਿਅਤ / ਆਮ",
+                status_woozy: "ਚੱਕਰ ਆਉਣਾ / ਸਾਵਧਾਨ",
                 rule_drive: "ਡਰਾਈਵਿੰਗ ਨਾ ਕਰੋ",
                 rule_cook: "ਖਾਣਾ ਨਾ ਪਕਾਓ",
                 rule_sign: "ਦਸਤਖਤ ਨਾ ਕਰੋ",
@@ -520,6 +679,9 @@
                 check_polyp: "ਪੌਲੀਪਸ",
                 check_stretch: "ਖਿੱਚ",
                 check_dye: "ਰੰਗ (Dye)",
+                check_hpylori: "H. Pylori ਟੈਸਟ",
+                check_banding: "ਬੈਂਡਿੰਗ",
+                check_stent: "ਸਟੈਂਟ",
                 info_biopsy_title: "ਬਾਇਓਪਸੀ ਦੇ ਨਮੂਨੇ",
                 info_biopsy_text: "ਨਤੀਜੇ 2-6 ਹਫ਼ਤੇ ਲੈਂਦੇ ਹਨ। ਤੁਹਾਡਾ ਡਾਕਟਰ ਸੰਪਰਕ ਕਰੇਗਾ।",
                 info_polyp_title: "ਪੌਲੀਪ ਕਲਿੱਪ",
@@ -528,6 +690,12 @@
                 info_dilatation_text: "ਸਖਤ ਖੁਰਾਕ: 4 ਘੰਟੇ ਠੰਡਾ ਤਰਲ, 24 ਘੰਟੇ ਗਰਮ ਨਹੀਂ, 3-5 ਦਿਨ ਨਰਮ ਖੁਰਾਕ।",
                 info_dye_title: "ਨੀਲਾ ਰੰਗ",
                 info_dye_text: "ਪਿਸ਼ਾਬ ਨੀਲਾ ਹੋ ਸਕਦਾ ਹੈ। ਇਹ ਨੁਕਸਾਨਦੇਹ ਨਹੀਂ ਹੈ।",
+                info_hpylori_title: "H. Pylori (CLO ਟੈਸਟ)",
+                info_hpylori_text: "ਨਤੀਜੇ 1-2 ਹਫ਼ਤਿਆਂ ਵਿੱਚ। ਸਕਾਰਾਤਮਕ ਹੋਣ 'ਤੇ ਐਂਟੀਬਾਇਓਟਿਕਸ।",
+                info_banding_title: "ਬਵਾਸੀਰ ਦੀ ਬੈਂਡਿੰਗ",
+                info_banding_text: "ਬੈਂਡ 10-14 ਦਿਨਾਂ ਵਿੱਚ ਡਿੱਗ ਜਾਂਦੇ ਹਨ। ਹਲਕਾ ਖੂਨ ਆ ਸਕਦਾ ਹੈ।",
+                info_stent_title: "ਸਟੈਂਟ ਪਾਉਣਾ",
+                info_stent_text: "ਭੋਜਨ ਚੰਗੀ ਤਰ੍ਹਾਂ ਚਬਾਓ। ਸਿਰਫ ਨਰਮ ਖੁਰਾਕ। ਫਿਜ਼ੀ ਡਰਿੰਕਸ ਮਦਦ ਕਰਦੇ ਹਨ।",
                 contact_unit: "ਹਸਪਤਾਲ ਨੰਬਰ (9-5)",
                 contact_urgent: "ਐਮਰਜੈਂਸੀ",
                 call_emergency_btn: "111 ਜਾਂ ਐਮਰਜੈਂਸੀ ਨੂੰ ਕਾਲ ਕਰੋ",
@@ -549,6 +717,12 @@
                 iv_desc: "24 de ore restricții",
                 protocol_title: "Protocolul de 24 de ore",
                 protocol_desc: "Restricții esențiale pentru pacienții cu sedare IV.",
+                recovery_instruction: "Trageți glisorul pentru a vedea recuperarea:",
+                supervision_title: "Supraveghere obligatorie",
+                supervision_desc: "Trebuie să aveți un adult responsabil cu dvs. timp de 24 de ore. Nu aveți voie să fiți singur.",
+                status_unsafe: "Nesigur / Afectat",
+                status_safe: "Sigur / Normal",
+                status_woozy: "Amețit / Atenție",
                 rule_drive: "Nu conduceți",
                 rule_cook: "Nu gătiți",
                 rule_sign: "Nu semnați acte",
@@ -576,6 +750,9 @@
                 check_polyp: "Polipi",
                 check_stretch: "Dilatare",
                 check_dye: "Colorant",
+                check_hpylori: "Test H. Pylori",
+                check_banding: "Ligatură",
+                check_stent: "Stent",
                 info_biopsy_title: "Probe Biopsie",
                 info_biopsy_text: "Rezultatele durează 2-6 săptămâni. Medicul vă va contacta.",
                 info_polyp_title: "Clipsuri Polipi",
@@ -584,6 +761,12 @@
                 info_dilatation_text: "Dietă: 0-4 ore lichide reci, 24 ore nimic fierbinte, 3-5 zile mâncare moale.",
                 info_dye_title: "Colorant Albastru",
                 info_dye_text: "Urina poate fi albastră. Este inofensiv.",
+                info_hpylori_title: "H. Pylori (Test CLO)",
+                info_hpylori_text: "Rezultate în 1-2 săptămâni. Dacă e pozitiv, necesită antibiotice.",
+                info_banding_title: "Ligatură Hemoroizi",
+                info_banding_text: "Elasticele cad în 10-14 zile. Sângerare minoră posibilă.",
+                info_stent_title: "Montare Stent",
+                info_stent_text: "Mestecați bine. Doar mâncare moale. Băuturile acidulate ajută.",
                 contact_unit: "Telefon Unitate (9-5)",
                 contact_urgent: "Urgență",
                 call_emergency_btn: "Sunați la 111 sau Urgență",
@@ -605,6 +788,12 @@
                 iv_desc: "24h upośledzenie",
                 protocol_title: "Protokół 24-godzinny",
                 protocol_desc: "Niezbędne ograniczenia dla pacjentów po sedacji.",
+                recovery_instruction: "Przesuń suwak, aby zobaczyć stan:",
+                supervision_title: "Obowiązkowy Nadzór",
+                supervision_desc: "Przez 24 godziny musisz mieć przy sobie odpowiedzialną osobę dorosłą. Nie możesz być sam.",
+                status_unsafe: "Niebezpieczne / Upośledzone",
+                status_safe: "Bezpieczne / Norma",
+                status_woozy: "Otumanienie / Ostrożnie",
                 rule_drive: "Zakaz prowadzenia",
                 rule_cook: "Zakaz gotowania",
                 rule_sign: "Zakaz podpisywania",
@@ -632,6 +821,9 @@
                 check_polyp: "Polipy",
                 check_stretch: "Rozszerzanie",
                 check_dye: "Barwnik",
+                check_hpylori: "Test H. Pylori",
+                check_banding: "Opaskowanie",
+                check_stent: "Stent",
                 info_biopsy_title: "Próbki biopsyjne",
                 info_biopsy_text: "Wyniki trwają 2–6 tygodni. Lekarz skontaktuje się z Tobą.",
                 info_polyp_title: "Klipsy po polipach",
@@ -640,6 +832,12 @@
                 info_dilatation_text: "Dieta: 0-4h zimne płyny, 24h brak gorących, 3-5 dni miękka.",
                 info_dye_title: "Błękit metylenowy",
                 info_dye_text: "Mocz może być niebieski. To nieszkodliwe.",
+                info_hpylori_title: "H. Pylori (Test CLO)",
+                info_hpylori_text: "Wyniki u lekarza w 1-2 tyg. Jeśli pozytywny, antybiotyki.",
+                info_banding_title: "Opaskowanie hemoroidów",
+                info_banding_text: "Opaski odpadają po 10-14 dniach. Możliwe drobne krwawienie.",
+                info_stent_title: "Założenie stentu",
+                info_stent_text: "Żuj dokładnie. Tylko miękka dieta. Napoje gazowane pomagają czyścić.",
                 contact_unit: "Telefony (9-17)",
                 contact_urgent: "Nagłe wypadki",
                 call_emergency_btn: "Zadzwoń na 111",
@@ -661,6 +859,12 @@
                 iv_desc: "24 گھنٹے احتیاط",
                 protocol_title: "24 گھنٹے کا پروٹوکول",
                 protocol_desc: "IV بے ہوشی والے مریضوں کے لیے ضروری پابندیاں۔",
+                recovery_instruction: "ریکوری دیکھنے کے لیے سلائیڈر کو گھسیٹیں:",
+                supervision_title: "لازمی نگرانی",
+                supervision_desc: "آپ کے ساتھ 24 گھنٹے ایک ذمہ دار بالغ کا ہونا ضروری ہے۔ آپ کو اکیلے رہنے کی اجازت نہیں ہے۔",
+                status_unsafe: "غیر محفوظ / نشہ",
+                status_safe: "محفوظ / نارمل",
+                status_woozy: "چکر / احتیاط",
                 rule_drive: "ڈرائیونگ منع ہے",
                 rule_cook: "کھانا پکانا منع ہے",
                 rule_sign: "دستخط منع ہیں",
@@ -688,6 +892,9 @@
                 check_polyp: "پولیپس",
                 check_stretch: "کھچاؤ",
                 check_dye: "رنگ (Dye)",
+                check_hpylori: "ایچ پائلوری ٹیسٹ",
+                check_banding: "بینڈنگ",
+                check_stent: "اسٹنٹ",
                 info_biopsy_title: "بایپسی کے نمونے",
                 info_biopsy_text: "نتائج میں 2-6 ہفتے لگتے ہیں۔ آپ کا ڈاکٹر رابطہ کرے گا۔",
                 info_polyp_title: "پولیپ کلپس",
@@ -696,6 +903,12 @@
                 info_dilatation_text: "سخت غذا: 4 گھنٹے ٹھنڈا مائع، 24 گھنٹے گرم نہیں، 3-5 دن نرم غذا۔",
                 info_dye_title: "نیلا رنگ",
                 info_dye_text: "پیشاب نیلا ہوسکتا ہے۔ یہ بے ضرر ہے۔",
+                info_hpylori_title: "ایچ پائلوری (CLO ٹیسٹ)",
+                info_hpylori_text: "1-2 ہفتوں میں نتائج۔ مثبت ہونے پر اینٹی بائیوٹکس۔",
+                info_banding_title: "بواسیر کی بینڈنگ",
+                info_banding_text: "بینڈ 10-14 دنوں میں گر جاتے ہیں۔ ہلکا خون آسکتا ہے۔",
+                info_stent_title: "اسٹنٹ ڈالنا",
+                info_stent_text: "کھانا اچھی طرح چبائیں۔ صرف نرم غذا۔ فیزی ڈرنکس مدد کرتے ہیں۔",
                 contact_unit: "ہسپتال نمبر (9-5)",
                 contact_urgent: "ایمرجنسی",
                 call_emergency_btn: "ایمرجنسی کو کال کریں",
@@ -716,7 +929,13 @@
                 iv_label: "Sedação IV",
                 iv_desc: "24h de restrição",
                 protocol_title: "Protocolo de 24 Horas",
-                protocol_desc: "Restrições essenciais para pacientes com sedação IV.",
+                protocol_desc: "Restricciones essenciais para pacientes com sedação IV.",
+                recovery_instruction: "Arraste o controle para ver a recuperação:",
+                supervision_title: "Supervisão Obrigatória",
+                supervision_desc: "Você deve ter um adulto responsável com você por 24 horas. Não pode ficar sozinho.",
+                status_unsafe: "Inseguro / Afetado",
+                status_safe: "Seguro / Normal",
+                status_woozy: "Tonto / Cuidado",
                 rule_drive: "Não Dirigir",
                 rule_cook: "Não Cozinhar",
                 rule_sign: "Não Assinar",
@@ -744,6 +963,9 @@
                 check_polyp: "Pólipos",
                 check_stretch: "Dilatação",
                 check_dye: "Corante",
+                check_hpylori: "Teste H. Pylori",
+                check_banding: "Ligadura",
+                check_stent: "Stent",
                 info_biopsy_title: "Amostras de Biopsia",
                 info_biopsy_text: "Resultados levam 2-6 semanas. Seu médico entrará em contato.",
                 info_polyp_title: "Clips de Pólipos",
@@ -752,6 +974,12 @@
                 info_dilatation_text: "Dieta: 0-4h líquidos frios, 24h nada quente, 3-5 dias dieta leve.",
                 info_dye_title: "Azul de Metileno",
                 info_dye_text: "Urina pode ficar azul. É inofensivo.",
+                info_hpylori_title: "H. Pylori (Teste CLO)",
+                info_hpylori_text: "Resultados em 1-2 semanas. Se positivo, antibióticos.",
+                info_banding_title: "Ligadura Elástica",
+                info_banding_text: "Elásticos caem em 10-14 dias. Sangramento leve possível.",
+                info_stent_title: "Colocação de Stent",
+                info_stent_text: "Mastigue bem. Dieta pastosa. Bebidas com gás ajudam a limpar.",
                 contact_unit: "Telefone da Unidade (9-5)",
                 contact_urgent: "Emergência",
                 call_emergency_btn: "Ligue para 111 ou Emergência",
@@ -773,6 +1001,12 @@
                 iv_desc: "24h de restricción",
                 protocol_title: "Protocolo de 24 Horas",
                 protocol_desc: "Restricciones esenciales para pacientes con sedación IV.",
+                recovery_instruction: "Arrastre el control para ver la recuperación:",
+                supervision_title: "Supervisión Obligatoria",
+                supervision_desc: "Debe tener un adulto responsable con usted durante 24 horas. No puede estar solo.",
+                status_unsafe: "Inseguro / Afectado",
+                status_safe: "Seguro / Normal",
+                status_woozy: "Mareado / Precaución",
                 rule_drive: "No Conducir",
                 rule_cook: "No Cocinar",
                 rule_sign: "No Firmar",
@@ -800,6 +1034,9 @@
                 check_polyp: "Pólipos",
                 check_stretch: "Dilatación",
                 check_dye: "Tinte",
+                check_hpylori: "Prueba H. Pylori",
+                check_banding: "Bandas",
+                check_stent: "Stent",
                 info_biopsy_title: "Muestras de Biopsia",
                 info_biopsy_text: "Resultados tardan 2-6 semanas. Su médico le contactará.",
                 info_polyp_title: "Clips de Pólipos",
@@ -808,6 +1045,12 @@
                 info_dilatation_text: "Dieta: 0-4h líquidos fríos, 24h nada caliente, 3-5 días dieta blanda.",
                 info_dye_title: "Azul de Metileno",
                 info_dye_text: "Orina puede volverse azul. Es inofensivo.",
+                info_hpylori_title: "H. Pylori (Prueba CLO)",
+                info_hpylori_text: "Resultados en 1-2 semanas. Si es positivo, antibióticos.",
+                info_banding_title: "Bandas de Hemorroides",
+                info_banding_text: "Las bandas caen en 10-14 días. Sangrado leve posible.",
+                info_stent_title: "Colocación de Stent",
+                info_stent_text: "Masticar bien. Dieta blanda. Bebidas gaseosas ayudan.",
                 contact_unit: "Teléfono de Unidad (9-5)",
                 contact_urgent: "Emergencia",
                 call_emergency_btn: "Llame al 111 o Emergencia",
@@ -829,6 +1072,12 @@
                 iv_desc: "24 ساعة من القيود",
                 protocol_title: "بروتوكول الـ 24 ساعة",
                 protocol_desc: "قيود ضرورية للمرضى الذين تلقوا تخدير وريدي.",
+                recovery_instruction: "اسحب المؤشر لترى حالة التعافي:",
+                supervision_title: "إشراف إلزامي",
+                supervision_desc: "يجب أن يكون معك شخص بالغ مسؤول لمدة 24 ساعة. لا يُسمح لك بالبقاء وحدك.",
+                status_unsafe: "غير آمن / متأثر",
+                status_safe: "آمن / طبيعي",
+                status_woozy: "دوار / حذر",
                 rule_drive: "ممنوع القيادة",
                 rule_cook: "ممنوع الطبخ",
                 rule_sign: "ممنوع التوقيع",
@@ -856,6 +1105,9 @@
                 check_polyp: "سلائل (Polijps)",
                 check_stretch: "توسيع",
                 check_dye: "صبغة",
+                check_hpylori: "اختبار جرثومة المعدة",
+                check_banding: "ربط البواسير",
+                check_stent: "دعامة",
                 info_biopsy_title: "عينات الخزعة",
                 info_biopsy_text: "تستغرق النتائج 2-6 أسابيع. سيتصل بك طبيبك.",
                 info_polyp_title: "مشابك السلائل",
@@ -864,6 +1116,12 @@
                 info_dilatation_text: "حمية: 0-4 ساعات سوائل باردة، 24 ساعة لا مشروبات ساخنة، 3-5 أيام طعام لين.",
                 info_dye_title: "صبغة زرقاء",
                 info_dye_text: "قد يصبح البول أزرق. هذا غير ضار.",
+                info_hpylori_title: "جرثومة المعدة (CLO)",
+                info_hpylori_text: "النتائج في 1-2 أسبوع. إذا كانت إيجابية، مضادات حيوية.",
+                info_banding_title: "ربط البواسير",
+                info_banding_text: "تسقط الأربطة في 10-14 يوماً. نزيف خفيف محتمل.",
+                info_stent_title: "وضع دعامة",
+                info_stent_text: "امضغ جيداً. طعام لين فقط. المشروبات الغازية تساعد.",
                 contact_unit: "هاتف الوحدة (9-5)",
                 contact_urgent: "طوارئ",
                 call_emergency_btn: "اتصل بالطوارئ",
@@ -895,6 +1153,9 @@
                 }
             });
 
+            // Re-render slider text
+            updateRecoveryState(document.getElementById('recoverySlider').value);
+            
             // Refresh charts with new language labels
             updateCharts(lang);
         }
@@ -903,60 +1164,48 @@
             document.body.classList.toggle('text-large');
         }
 
-        // --- 1. Recovery Chart (Chart.js) ---
-        const ctxRecovery = document.getElementById('recoveryChart').getContext('2d');
-        let recoveryChart;
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
 
-        function initRecoveryChart(lang) {
-            if (recoveryChart) recoveryChart.destroy();
-            const d = dictionary[lang];
-            const labels = d.chart_time_labels;
+        // --- 1. Recovery Slider Logic ---
+        function updateRecoveryState(val) {
+            const timeDisplay = document.getElementById('timeDisplay');
+            const d = dictionary[currentLang];
+            
+            const steps = [
+                { time: '0m', spray: 'unsafe', gas: 'unsafe', iv: 'unsafe' }, // 0
+                { time: '30m', spray: 'unsafe', gas: 'safe', iv: 'unsafe' }, // 1
+                { time: '1h', spray: 'safe', gas: 'safe', iv: 'unsafe' }, // 2
+                { time: '12h', spray: 'safe', gas: 'safe', iv: 'unsafe' }, // 3
+                { time: '24h+', spray: 'safe', gas: 'safe', iv: 'safe' }  // 4
+            ];
+            
+            const state = steps[val];
+            timeDisplay.textContent = state.time;
 
-            recoveryChart = new Chart(ctxRecovery, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: d.iv_label,
-                            data: [10, 20, 30, 45, 60, 85, 100],
-                            borderColor: '#1D4ED8',
-                            backgroundColor: 'rgba(29, 78, 216, 0.05)',
-                            fill: true,
-                            tension: 0.4,
-                            borderWidth: 3
-                        },
-                        {
-                            label: d.gas_label,
-                            data: [40, 95, 100, 100, 100, 100, 100],
-                            borderColor: '#06B6D4',
-                            borderDash: [5, 5],
-                            tension: 0.2
-                        },
-                        {
-                            label: d.spray_label,
-                            data: [80, 90, 100, 100, 100, 100, 100],
-                            borderColor: '#10B981',
-                            borderDash: [2, 2],
-                            tension: 0.2
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            title: { display: true, text: '% Normal Function' },
-                            grid: { display: false }
-                        },
-                        x: { grid: { display: false } }
-                    },
-                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true } } }
+            const updateCard = (id, status) => {
+                const card = document.getElementById(id);
+                const txt = card.querySelector('.status-text');
+                
+                // Reset classes
+                card.className = "p-4 rounded-xl transition-colors duration-300 text-center border";
+                txt.className = "text-xs font-bold uppercase mt-1 status-text";
+
+                if(status === 'unsafe') {
+                    card.classList.add('bg-red-50', 'dark:bg-red-900/20', 'border-red-100', 'dark:border-red-800');
+                    txt.classList.add('text-red-600', 'dark:text-red-400');
+                    txt.textContent = d.status_unsafe;
+                } else if (status === 'safe') {
+                    card.classList.add('bg-emerald-50', 'dark:bg-emerald-900/20', 'border-emerald-100', 'dark:border-emerald-800');
+                    txt.classList.add('text-emerald-600', 'dark:text-emerald-400');
+                    txt.textContent = d.status_safe;
                 }
-            });
+            };
+
+            updateCard('status-spray', state.spray);
+            updateCard('status-gas', state.gas);
+            updateCard('status-iv', state.iv);
         }
 
         // --- 2. Duration Chart ---
@@ -966,6 +1215,8 @@
         function initDurationChart(lang) {
             if (durationChart) durationChart.destroy();
             const d = dictionary[lang];
+            const isDark = document.documentElement.classList.contains('dark');
+            const textColor = isDark ? '#9ca3af' : '#6b7280';
             
             // Helper to format long labels
             function formatLabels(labels) {
@@ -989,22 +1240,28 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        y: { grid: { display: false } },
-                        x: { grid: { display: false } }
+                        y: { 
+                            grid: { display: false },
+                            ticks: { color: textColor }
+                        },
+                        x: { 
+                            grid: { display: false },
+                            ticks: { color: textColor }
+                        }
                     }
                 }
             });
         }
 
         function updateCharts(lang) {
-            initRecoveryChart(lang);
+            // Note: Recovery Chart (Line) removed in favor of Slider
             initDurationChart(lang);
         }
 
         // --- 3. Anatomical Symptom Logic with Multi-Language ---
         
         const symptomKeys = {
-            'throat': { icon: '🟢', color: 'text-emerald-700', type: 'normal',
+            'throat': { icon: '🟢', color: 'text-emerald-700 dark:text-emerald-400', type: 'normal',
                 en: { title: 'Post-Gastroscopy Throat', text: 'The scope can scratch the back of the throat. This feels like the start of a cold. It will settle in 48 hours. Eat cool, soft foods.' },
                 pl: { title: 'Gardło po gastroskopii', text: 'Endoskop może podrapać gardło. Uczucie jak przy przeziębieniu. Minie w 48h. Jedz chłodne, miękkie potrawy.' },
                 ur: { title: 'گیسٹروسکوپی کے بعد گلا', text: 'اسکوپ گلے کو کھرچ سکتا ہے۔ یہ زکام جیسا محسوس ہوتا ہے۔ 48 گھنٹوں میں ٹھیک ہو جائے گا۔ ٹھنڈی اور نرم غذائیں کھائیں۔' },
@@ -1014,7 +1271,7 @@
                 es: { title: 'Garganta Post-Gastroscopia', text: 'El endoscopio puede raspar la garganta. Se siente como un resfriado. Pasará en 48 horas. Coma alimentos blandos y fríos.' },
                 ar: { title: 'حلق بعد التنظير', text: 'قد يخدش المنظار الحلق. يشبه بداية الزكام. سيستقر خلال 48 ساعة. تناول أطعمة باردة ولينة.' }
             },
-            'chest_pain': { icon: '🟢', color: 'text-emerald-700', type: 'normal',
+            'chest_pain': { icon: '🟢', color: 'text-emerald-700 dark:text-emerald-400', type: 'normal',
                 en: { title: 'Mild Chest Discomfort', text: 'Burping or pressure is common due to air used to inflate the stomach. It should resolve if you walk around.' },
                 pl: { title: 'Lekki dyskomfort w klatce', text: 'Odbijanie lub ucisk jest normalne z powodu powietrza. Powinno minąć po spacerze.' },
                 ur: { title: 'سینے میں ہلکی تکلیف', text: 'ہوا کی وجہ سے ڈکار یا دباؤ عام ہے۔ اگر آپ چلیں پھریں تو یہ ٹھیک ہو جانا چاہیے۔' },
@@ -1024,7 +1281,7 @@
                 es: { title: 'Molestia en el pecho', text: 'Eructos o presión son comunes debido al aire. Debería pasar si camina.' },
                 ar: { title: 'انزعاج خفيف في الصدر', text: 'التجشؤ أو الضغط شائع بسبب الهواء. يجب أن يزول إذا مشيت قليلاً.' }
             },
-            'bloating': { icon: '🟢', color: 'text-emerald-700', type: 'normal',
+            'bloating': { icon: '🟢', color: 'text-emerald-700 dark:text-emerald-400', type: 'normal',
                 en: { title: 'Trapped Wind', text: 'We pump CO2/Air into the bowel. This causes bloating. Move around and pass wind. Do not be embarrassed.' },
                 pl: { title: 'Wzdęcia', text: 'Pompujemy powietrze do jelit. To powoduje wzdęcia. Poruszaj się, aby uwolnić gazy. Nie wstydź się.' },
                 ur: { title: 'گیس', text: 'ہم آنت میں ہوا بھرتے ہیں۔ اس سے اپھارہ ہوتا ہے۔ چلیں پھریں اور ہوا خارج کریں۔ شرمندہ نہ ہوں۔' },
@@ -1034,7 +1291,7 @@
                 es: { title: 'Gases Atrapados', text: 'Bombeamos aire en el intestino. Esto causa hinchazón. Muévase y libere gases.' },
                 ar: { title: 'غازات محبوسة', text: 'نضخ الهواء في الأمعاء. هذا يسبب الانتفاخ. تحرك وأخرج الغازات. لا تشعر بالحرج.' }
             },
-            'cramps': { icon: '🟢', color: 'text-emerald-700', type: 'normal',
+            'cramps': { icon: '🟢', color: 'text-emerald-700 dark:text-emerald-400', type: 'normal',
                 en: { title: 'Bowel Spasms', text: 'The bowel may spasm after being stretched. Feels like period pain. Warm water or peppermint tea helps.' },
                 pl: { title: 'Skurcze jelit', text: 'Jelita mogą się kurczyć. Uczucie jak przy miesiączce. Pomaga ciepła woda lub mięta.' },
                 ur: { title: 'آنتوں کے مروڑ', text: 'کھچاؤ کے بعد آنت میں مروڑ ہو سکتا ہے۔ گرم پانی یا پودینے کی چائے مدد کرتی ہے۔' },
@@ -1044,7 +1301,7 @@
                 es: { title: 'Espasmos intestinales', text: 'Se siente como dolor menstrual. Agua tibia o té de menta ayudan.' },
                 ar: { title: 'تشنجات معوية', text: 'قد تتشنج الأمعاء. يشبه ألم الدورة الشهرية. الماء الدافئ أو شاي النعناع يساعد.' }
             },
-            'bleeding_mild': { icon: '🟠', color: 'text-amber-700', type: 'monitor',
+            'bleeding_mild': { icon: '🟠', color: 'text-amber-700 dark:text-amber-400', type: 'monitor',
                 en: { title: 'Minor Spotting', text: 'A few drops of blood on tissue is normal, especially after polyps. Stops within 24 hours.' },
                 pl: { title: 'Drobne plamienie', text: 'Kilka kropel krwi jest normalne, zwłaszcza po polipach. Ustępuje w ciągu 24h.' },
                 ur: { title: 'ہلکا خون', text: 'ٹشو پر خون کے چند قطرے معمول کی بات ہے۔ 24 گھنٹوں میں رک جاتا ہے۔' },
@@ -1054,7 +1311,7 @@
                 es: { title: 'Pequeño sangrado', text: 'Unas gotas de sangre son normales. Se detiene en 24 horas.' },
                 ar: { title: 'نزيف خفيف', text: 'بضع قطرات من الدم طبيعية. تتوقف خلال 24 ساعة.' }
             },
-            'bleeding_heavy': { icon: '🚨', color: 'text-rose-700', type: 'urgent',
+            'bleeding_heavy': { icon: '🚨', color: 'text-rose-700 dark:text-rose-400', type: 'urgent',
                 en: { title: 'SIGNIFICANT BLEEDING', text: 'Passing clots, dark stools, or >1 egg-cup of blood? Seek help immediately.' },
                 pl: { title: 'ZNACZNE KRWAWIENIE', text: 'Skrzepy, ciemne stolce lub dużo krwi? Natychmiast szukaj pomocy.' },
                 ur: { title: 'زیادہ خون بہنا', text: 'اگر خون کے لوتھڑے یا کالا پاخانہ آئے تو فوراً مدد حاصل کریں۔' },
@@ -1064,7 +1321,7 @@
                 es: { title: 'SANGRADO INTENSO', text: '¿Coágulos, heces oscuras o mucha sangre? Busque ayuda inmediatamente.' },
                 ar: { title: 'نزيف حاد', text: 'جلطات، براز داكن، أو دم كثير؟ اطلب المساعدة فوراً.' }
             },
-            'severe_pain': { icon: '🚨', color: 'text-rose-700', type: 'urgent',
+            'severe_pain': { icon: '🚨', color: 'text-rose-700 dark:text-rose-400', type: 'urgent',
                 en: { title: 'PERFORATION RISK', text: 'Severe, continuous pain + rigid tummy is an emergency. Go to A&E.' },
                 pl: { title: 'RYZYKO PERFORACJI', text: 'Silny, ciągły ból + twardy brzuch to nagły wypadek. Jedź na SOR.' },
                 ur: { title: 'آنت پھٹنے کا خطرہ', text: 'شدید، مسلسل درد اور سخت پیٹ ایمرجنسی ہے۔ فوراً ہسپتال جائیں۔' },
@@ -1074,7 +1331,7 @@
                 es: { title: 'RIESGO DE PERFORACIÓN', text: 'Dolor severo y continuo + barriga rígida es emergencia. Vaya al hospital.' },
                 ar: { title: 'خطر انثقاب', text: 'ألم شديد ومستمر + بطن صلب حالة طارئة. اذهب للمستشفى.' }
             },
-            'fever': { icon: '🚨', color: 'text-rose-700', type: 'urgent',
+            'fever': { icon: '🚨', color: 'text-rose-700 dark:text-rose-400', type: 'urgent',
                 en: { title: 'INFECTION RISK', text: 'Shivering, shaking, or temp >38°C within 48h requires urgent assessment.' },
                 pl: { title: 'RYZYKO INFEKCJI', text: 'Dreszcze lub temp >38°C w ciągu 48h wymaga pilnej oceny.' },
                 ur: { title: 'انفیکشن کا خطرہ', text: 'اگر 48 گھنٹوں میں بخار یا سردی لگے تو فوراً ڈاکٹر کو دکھائیں۔' },
@@ -1083,6 +1340,46 @@
                 pt: { title: 'RISCO DE INFECÇÃO', text: 'Calafrios ou febre >38°C requerem avaliação urgente.' },
                 es: { title: 'RIESGO DE INFECCIÓN', text: 'Escalofríos o fiebre >38°C requieren evaluación urgente.' },
                 ar: { title: 'خطر العدوى', text: 'قشعريرة أو حرارة >38 درجة مئوية تتطلب تقييماً عاجلاً.' }
+            },
+            'vomiting': { icon: '🤮', color: 'text-rose-700 dark:text-rose-400', type: 'urgent',
+                en: { title: 'VOMITING', text: 'Persistent vomiting or vomiting blood/coffee-grounds is dangerous. Seek help immediately.' },
+                pl: { title: 'WYMIOTY', text: 'Uporczywe wymioty lub wymioty krwią są niebezpieczne. Natychmiast szukaj pomocy.' },
+                ur: { title: 'الٹی', text: 'مسلسل الٹی یا خون کی الٹی خطرناک ہے۔ فوراً مدد حاصل کریں۔' },
+                pa: { title: 'ਉਲਟੀ', text: 'ਲਗਾਤਾਰ ਉਲਟੀ ਜਾਂ ਖੂਨ ਦੀ ਉਲਟੀ ਖਤਰਨਾਕ ਹੈ। ਤੁਰੰਤ ਮਦਦ ਲਓ।' },
+                ro: { title: 'VĂRSĂTURI', text: 'Vărsăturile persistente sau cu sânge sunt periculoase. Căutați ajutor imediat.' },
+                pt: { title: 'VÔMITO', text: 'Vômito persistente ou com sangue é perigoso. Procure ajuda imediatamente.' },
+                es: { title: 'VÓMITOS', text: 'Los vómitos persistentes o con sangre son peligrosos. Busque ayuda inmediatamente.' },
+                ar: { title: 'القيء', text: 'القيء المستمر أو قيء الدم خطير. اطلب المساعدة فوراً.' }
+            },
+            'breathing': { icon: '🫁', color: 'text-rose-700 dark:text-rose-400', type: 'urgent',
+                en: { title: 'BREATHING DIFFICULTY', text: 'Shortness of breath, wheezing, or chest tightness could indicate aspiration or reaction.' },
+                pl: { title: 'TRUDNOŚCI W ODDYCHANIU', text: 'Duszność, świszczący oddech lub ucisk w klatce piersiowej są niebezpieczne.' },
+                ur: { title: 'سانس لینے میں دشواری', text: 'سانس پھولنا یا سینے میں جکڑن خطرناک ہو سکتی ہے۔' },
+                pa: { title: 'ਸਾਹ ਲੈਣ ਵਿੱਚ ਮੁਸ਼ਕਲ', text: 'ਸਾਹ ਚੜ੍ਹਨਾ ਜਾਂ ਛਾਤੀ ਵਿੱਚ ਜਕੜਨ ਖਤਰਨਾਕ ਹੋ ਸਕਦੀ ਹੈ।' },
+                ro: { title: 'DIFICULTATE ÎN RESPIRAȚIE', text: 'Respirația scurtă sau presiunea în piept pot indica o problemă gravă.' },
+                pt: { title: 'DIFICULDADE RESPIRATÓRIA', text: 'Falta de ar ou aperto no peito pode indicar um problema grave.' },
+                es: { title: 'DIFICULTAD RESPIRATORIA', text: 'La falta de aire o la opresión en el pecho pueden indicar un problema grave.' },
+                ar: { title: 'صعوبة في التنفس', text: 'ضيق التنفس أو ضيق الصدر قد يشير إلى مشكلة خطيرة.' }
+            },
+            'neck': { icon: '🧣', color: 'text-rose-700 dark:text-rose-400', type: 'urgent',
+                en: { title: 'NECK SWELLING', text: 'Swelling or a "crackling" sensation under the skin (Surgical Emphysema) is a perforation sign.' },
+                pl: { title: 'OBRZĘK SZYI', text: 'Obrzęk lub uczucie "trzeszczenia" pod skórą to znak perforacji.' },
+                ur: { title: 'گردن کی سوجن', text: 'سوجن یا جلد کے نیچے "کریکنگ" کا احساس آنت پھٹنے کی علامت ہے۔' },
+                pa: { title: 'ਗਰਦਨ ਦੀ ਸੋਜ', text: 'ਸੋਜ ਜਾਂ ਚਮੜੀ ਦੇ ਹੇਠਾਂ "ਕ੍ਰੈਕਿੰਗ" ਮਹਿਸੂਸ ਹੋਣਾ ਖਤਰਨਾਕ ਹੈ।' },
+                ro: { title: 'UMFLAREA GÂTULUI', text: 'Umflarea sau senzația de "trosnituri" sub piele este un semn de perforație.' },
+                pt: { title: 'INCHAÇO NO PESCOÇO', text: 'Inchaço ou sensação de "estalo" sob a pele é sinal de perfuração.' },
+                es: { title: 'HINCHAZÓN DEL CUELLO', text: 'La hinchazón o sensación de "crujido" bajo la piel es señal de perforación.' },
+                ar: { title: 'تورم الرقبة', text: 'التورم أو الإحساس بـ "طقطقة" تحت الجلد هو علامة على الانثقاب.' }
+            },
+            'dysphagia': { icon: '🥣', color: 'text-rose-700 dark:text-rose-400', type: 'urgent',
+                en: { title: 'DYSPHAGIA', text: 'Severe pain when swallowing or inability to swallow saliva is an emergency.' },
+                pl: { title: 'DYSFAGIA', text: 'Silny ból przy przełykaniu lub niemożność przełknięcia śliny to nagły wypadek.' },
+                ur: { title: 'نگلنے میں دشواری', text: 'نگلتے وقت شدید درد یا تھوک نگلنے میں ناکامی ایمرجنسی ہے۔' },
+                pa: { title: 'ਨਿਗਲਣ ਵਿੱਚ ਮੁਸ਼ਕਲ', text: 'ਨਿਗਲਣ ਵੇਲੇ ਗੰਭੀਰ ਦਰਦ ਜਾਂ ਥੁੱਕ ਨਿਗਲਣ ਵਿੱਚ ਅਸਮਰੱਥਾ ਐਮਰਜੈਂਸੀ ਹੈ।' },
+                ro: { title: 'DISFAGIE', text: 'Durerea severă la înghițire sau incapacitatea de a înghiți saliva este o urgență.' },
+                pt: { title: 'DISFAGIA', text: 'Dor severa ao engolir ou incapacidade de engolir saliva é emergência.' },
+                es: { title: 'DISFAGIA', text: 'El dolor severo al tragar o la incapacidad de tragar saliva es una emergencia.' },
+                ar: { title: 'عسر البلع', text: 'الألم الشديد عند البلع أو عدم القدرة على بلع اللعاب حالة طارئة.' }
             }
         };
 
@@ -1117,22 +1414,22 @@
                 <div class="relative z-10 w-full">
                     <div class="text-6xl mb-4 animate-bounce">${data.icon}</div>
                     <h4 class="text-2xl font-bold ${data.color} mb-2">${content.title}</h4>
-                    <p class="text-slate-600 font-medium leading-relaxed mb-6 text-lg">${content.text}</p>
+                    <p class="text-slate-600 dark:text-slate-300 font-medium leading-relaxed mb-6 text-lg">${content.text}</p>
                     
-                    <button onclick="speakText('${content.title}. ${content.text}')" class="mb-4 inline-flex items-center px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full text-sm font-bold transition">
+                    <button onclick="speakText('${content.title}. ${content.text}')" class="mb-4 inline-flex items-center px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-full text-sm font-bold transition">
                         ${dictionary[currentLang].read_aloud}
                     </button>
             `;
 
             if (data.type === 'urgent') {
-                resultBox.classList.add('bg-rose-50', 'border-rose-300');
-                html += `<div class="block w-full bg-white px-6 py-4 rounded-xl border border-rose-200 text-base font-bold text-rose-600 shadow-sm uppercase tracking-wide animate-pulse">
+                resultBox.classList.add('bg-rose-50', 'dark:bg-rose-900/20', 'border-rose-300', 'dark:border-rose-800');
+                html += `<div class="block w-full bg-white dark:bg-slate-800 px-6 py-4 rounded-xl border border-rose-200 dark:border-rose-900 text-base font-bold text-rose-600 dark:text-rose-400 shadow-sm uppercase tracking-wide animate-pulse">
                             ${dictionary[currentLang].call_emergency_btn}
                          </div>`;
             } else if (data.type === 'monitor') {
-                resultBox.classList.add('bg-amber-50', 'border-amber-300');
+                resultBox.classList.add('bg-amber-50', 'dark:bg-amber-900/20', 'border-amber-300', 'dark:border-amber-800');
             } else {
-                resultBox.classList.add('bg-emerald-50', 'border-emerald-300');
+                resultBox.classList.add('bg-emerald-50', 'dark:bg-emerald-900/20', 'border-emerald-300', 'dark:border-emerald-800');
             }
 
             html += `</div>`;
@@ -1151,7 +1448,18 @@
         }
 
         // Initialize
+        updateRecoveryState(0);
         updateCharts('en');
+
+        // Watch for Dark Mode Changes to update charts
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === "class") {
+                    updateCharts(currentLang);
+                }
+            });
+        });
+        observer.observe(document.documentElement, { attributes: true });
 
     </script>
 </body>
