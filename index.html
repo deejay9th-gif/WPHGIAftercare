@@ -13,7 +13,8 @@
     <title>Frimley Health - Endoscopy Recovery</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Added Noto Sans SC/TC/Devanagari for better font support -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Noto+Nastaliq+Urdu:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Noto+Sans+TC:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -22,6 +23,9 @@
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                         urdu: ['Noto Nastaliq Urdu', 'serif'],
+                        sc: ['Noto Sans SC', 'sans-serif'],
+                        tc: ['Noto Sans TC', 'sans-serif'],
+                        hindi: ['Noto Sans Devanagari', 'sans-serif'],
                     }
                 }
             }
@@ -30,8 +34,11 @@
     <style>
         body { transition: background-color 0.3s ease, color 0.3s ease, font-size 0.2s ease; }
         
-        /* Urdu/Arabic Font Support */
+        /* Font Support */
         body[dir="rtl"] { font-family: 'Noto Nastaliq Urdu', 'Inter', serif; }
+        body.lang-zh-cn { font-family: 'Noto Sans SC', 'Inter', sans-serif; }
+        body.lang-zh-hk { font-family: 'Noto Sans TC', 'Inter', sans-serif; }
+        body.lang-hi { font-family: 'Noto Sans Devanagari', 'Inter', sans-serif; }
 
         /* Accessibility Modes */
         body.text-large { font-size: 1.25rem; }
@@ -166,9 +173,13 @@
                         <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-white/10 border border-white/30 text-white text-sm rounded-lg focus:ring-rose-500 focus:border-rose-500 block w-full p-2.5 [&>option]:text-slate-900">
                             <option value="en">🇬🇧 English</option>
                             <option value="pa">🇮🇳 ਪੰਜਾਬੀ (Punjabi)</option>
+                            <option value="hi">🇮🇳 हिंदी (Hindi)</option>
+                            <option value="ur">🇵🇰 اردو (Urdu)</option>
+                            <option value="tl">🇵🇭 Tagalog</option>
+                            <option value="zh-hk">🇭🇰 廣東話 (Cantonese)</option>
+                            <option value="zh-cn">🇨🇳 普通话 (Mandarin)</option>
                             <option value="ro">🇷🇴 Română (Romanian)</option>
                             <option value="pl">🇵🇱 Polski (Polish)</option>
-                            <option value="ur">🇵🇰 اردو (Urdu)</option>
                             <option value="pt">🇵🇹 Português (Portuguese)</option>
                             <option value="es">🇪🇸 Español (Spanish)</option>
                             <option value="ar">🇦🇪 العربية (Arabic)</option>
@@ -418,11 +429,101 @@
             </div>
         </section>
 
-        <!-- Section 4: Visual Duration -->
+        <!-- Section 4: Understanding Findings (Glossary) -->
         <section class="card bg-white dark:bg-slate-800 p-8 shadow-sm border border-slate-100 dark:border-slate-700">
-            <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4" data-i18n="timeline_title">Symptom Timeline</h3>
-            <div class="chart-container" style="height: 300px;">
-                <canvas id="durationChart" aria-label="Bar chart showing duration of common symptoms" role="img"></canvas>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                        <span>📑</span> <span data-i18n="findings_title">Understanding Common Findings</span>
+                    </h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mt-1" data-i18n="findings_desc">Definitions aligned with British Society of Gastroenterology (BSG) guidance.</p>
+                </div>
+                <a href="https://www.bsg.org.uk/information-for-patients" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800 transition flex items-center">
+                    Read Official BSG Leaflets <span class="ml-1">↗</span>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Polyps -->
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700 hover:border-blue-300 transition-colors group">
+                    <div class="flex items-center mb-2">
+                        <span class="text-2xl mr-3 bg-white dark:bg-slate-600 p-2 rounded-lg shadow-sm">🍄</span>
+                        <h5 class="font-bold text-slate-800 dark:text-slate-200 text-sm" data-i18n="term_polyp_title">Polyps</h5>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" data-i18n="term_polyp_desc">Fleshy growths on the lining. Most are harmless (benign) but some (adenomas) are removed to prevent future bowel cancer.</p>
+                </div>
+
+                <!-- Diverticular Disease -->
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700 hover:border-blue-300 transition-colors group">
+                    <div class="flex items-center mb-2">
+                        <span class="text-2xl mr-3 bg-white dark:bg-slate-600 p-2 rounded-lg shadow-sm">🥯</span>
+                        <h5 class="font-bold text-slate-800 dark:text-slate-200 text-sm" data-i18n="term_divert_title">Diverticular Disease</h5>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" data-i18n="term_divert_desc">Small pouches in the bowel wall. Very common. 'Diverticulitis' is when they become inflamed or infected.</p>
+                </div>
+
+                <!-- IBD/IBS -->
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700 hover:border-blue-300 transition-colors group">
+                    <div class="flex items-center mb-2">
+                        <span class="text-2xl mr-3 bg-white dark:bg-slate-600 p-2 rounded-lg shadow-sm">🌩</span>
+                        <h5 class="font-bold text-slate-800 dark:text-slate-200 text-sm" data-i18n="term_ibd_title">IBD & IBS</h5>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" data-i18n="term_ibd_desc">IBD (e.g. Crohn's, Colitis) is chronic inflammation. IBS is a common sensitivity causing pain/bloating without damage.</p>
+                </div>
+
+                <!-- Barrett's -->
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700 hover:border-blue-300 transition-colors group">
+                    <div class="flex items-center mb-2">
+                        <span class="text-2xl mr-3 bg-white dark:bg-slate-600 p-2 rounded-lg shadow-sm">🔥</span>
+                        <h5 class="font-bold text-slate-800 dark:text-slate-200 text-sm" data-i18n="term_barrett_title">Barrett's Oesophagus</h5>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" data-i18n="term_barrett_desc">Cell changes in the gullet from acid reflux. Increases risk of cancer slightly. Often monitored with regular endoscopies.</p>
+                </div>
+
+                <!-- Crohn's -->
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700 hover:border-blue-300 transition-colors group">
+                    <div class="flex items-center mb-2">
+                        <span class="text-2xl mr-3 bg-white dark:bg-slate-600 p-2 rounded-lg shadow-sm">🩹</span>
+                        <h5 class="font-bold text-slate-800 dark:text-slate-200 text-sm" data-i18n="term_crohn_title">Crohn's Disease</h5>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" data-i18n="term_crohn_desc">A type of IBD causing chronic inflammation anywhere in the gut. Symptoms include pain, diarrhoea, and weight loss.</p>
+                </div>
+
+                <!-- Hiatus Hernia -->
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700 hover:border-blue-300 transition-colors group">
+                    <div class="flex items-center mb-2">
+                        <span class="text-2xl mr-3 bg-white dark:bg-slate-600 p-2 rounded-lg shadow-sm">🔼</span>
+                        <h5 class="font-bold text-slate-800 dark:text-slate-200 text-sm" data-i18n="term_hernia_title">Hiatus Hernia</h5>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" data-i18n="term_hernia_desc">Part of the stomach squeezes up into the chest. Very common. Often causes acid reflux or heartburn.</p>
+                </div>
+
+                <!-- Coeliac -->
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700 hover:border-blue-300 transition-colors group">
+                    <div class="flex items-center mb-2">
+                        <span class="text-2xl mr-3 bg-white dark:bg-slate-600 p-2 rounded-lg shadow-sm">🌾</span>
+                        <h5 class="font-bold text-slate-800 dark:text-slate-200 text-sm" data-i18n="term_coeliac_title">Coeliac Disease</h5>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" data-i18n="term_coeliac_desc">Autoimmune reaction to gluten (wheat, barley, rye) damaging the gut lining. Treated with a strict gluten-free diet.</p>
+                </div>
+
+                <!-- Schatzki Ring -->
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700 hover:border-blue-300 transition-colors group">
+                    <div class="flex items-center mb-2">
+                        <span class="text-2xl mr-3 bg-white dark:bg-slate-600 p-2 rounded-lg shadow-sm">💍</span>
+                        <h5 class="font-bold text-slate-800 dark:text-slate-200 text-sm" data-i18n="term_ring_title">Schatzki Ring</h5>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" data-i18n="term_ring_desc">A benign tissue ring narrowing the gullet. Can make swallowing solid foods difficult. Treated by stretching.</p>
+                </div>
+
+                <!-- Ulcers -->
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700 hover:border-blue-300 transition-colors group">
+                    <div class="flex items-center mb-2">
+                        <span class="text-2xl mr-3 bg-white dark:bg-slate-600 p-2 rounded-lg shadow-sm">🔴</span>
+                        <h5 class="font-bold text-slate-800 dark:text-slate-200 text-sm" data-i18n="term_ulcer_title">Ulcers</h5>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" data-i18n="term_ulcer_desc">Sores on the gut lining. Often caused by H. Pylori bacteria or anti-inflammatory painkillers (NSAIDs).</p>
+                </div>
             </div>
         </section>
 
@@ -611,6 +712,28 @@
                 status_unsafe: "Unsafe / Impaired",
                 status_safe: "Safe / Normal",
                 status_woozy: "Woozy / Caution",
+                // New Findings Translations (English) - UPDATED TO BSG STANDARDS
+                findings_title: "Understanding Common Findings",
+                findings_desc: "Definitions aligned with British Society of Gastroenterology (BSG) guidance.",
+                term_polyp_title: "Polyps",
+                term_polyp_desc: "Fleshy growths on the lining. Most are harmless (benign) but some (adenomas) are removed to prevent future bowel cancer.",
+                term_divert_title: "Diverticular Disease",
+                term_divert_desc: "Small pouches in the bowel wall. Very common. 'Diverticulitis' is when they become inflamed or infected.",
+                term_ibd_title: "IBD & IBS",
+                term_ibd_desc: "IBD (e.g. Crohn's, Colitis) is chronic inflammation. IBS is a common sensitivity causing pain/bloating without damage.",
+                term_barrett_title: "Barrett's Oesophagus",
+                term_barrett_desc: "Cell changes in the gullet from acid reflux. Increases risk of cancer slightly. Often monitored with regular endoscopies.",
+                term_crohn_title: "Crohn's Disease",
+                term_crohn_desc: "A type of IBD causing chronic inflammation anywhere in the gut. Symptoms include pain, diarrhoea, and weight loss.",
+                term_hernia_title: "Hiatus Hernia",
+                term_hernia_desc: "Part of the stomach squeezes up into the chest. Very common. Often causes acid reflux or heartburn.",
+                term_coeliac_title: "Coeliac Disease",
+                term_coeliac_desc: "Autoimmune reaction to gluten (wheat, barley, rye) damaging the gut lining. Treated with a strict gluten-free diet.",
+                term_ring_title: "Schatzki Ring",
+                term_ring_desc: "A benign tissue ring narrowing the gullet. Can make swallowing solid foods difficult. Treated by stretching.",
+                term_ulcer_title: "Ulcers",
+                term_ulcer_desc: "Sores on the gut lining. Often caused by H. Pylori bacteria or anti-inflammatory painkillers (NSAIDs).",
+                
                 info_biopsy_title: "Biopsy Samples",
                 info_biopsy_text: "Samples have been sent to the lab. Results typically take 2–6 weeks. Your GP or consultant will contact you.",
                 info_polyp_title: "Polypectomy Clips",
@@ -682,6 +805,28 @@
                 check_hpylori: "H. Pylori ਟੈਸਟ",
                 check_banding: "ਬੈਂਡਿੰਗ",
                 check_stent: "ਸਟੈਂਟ",
+                // Punjabi Findings
+                findings_title: "ਰਿਪੋਰਟ ਦੀ ਸਮਝ",
+                findings_desc: "ਐਂਡੋਸਕੋਪੀ ਰਿਪੋਰਟਾਂ 'ਤੇ ਆਮ ਸ਼ਬਦਾਂ ਦੀ ਵਿਆਖਿਆ।",
+                term_polyp_title: "ਪੌਲੀਪਸ",
+                term_polyp_desc: "ਛੋਟੇ ਵਾਧੇ। ਜ਼ਿਆਦਾਤਰ ਨੁਕਸਾਨਦੇਹ ਨਹੀਂ ਹੁੰਦੇ ਪਰ ਕੈਂਸਰ ਤੋਂ ਬਚਣ ਲਈ ਹਟਾ ਦਿੱਤੇ ਜਾਂਦੇ ਹਨ।",
+                term_divert_title: "ਡਾਇਵਰਟੀਕੁਲਰ ਰੋਗ",
+                term_divert_desc: "ਅੰਤੜੀਆਂ ਵਿੱਚ ਛੋਟੀਆਂ ਥੈਲੀਆਂ। ਬਹੁਤ ਆਮ। ਦਰਦ ਜਾਂ ਫੁੱਲਣ ਦਾ ਕਾਰਨ ਬਣ ਸਕਦਾ ਹੈ।",
+                term_ibd_title: "IBD ਅਤੇ IBS",
+                term_ibd_desc: "ਅੰਤੜੀਆਂ ਦੀ ਸੋਜ ਜਾਂ ਚਿੜਚਿੜਾਪਨ।",
+                term_barrett_title: "ਬੈਰੇਟ ਦੀ ਠੋਡੀ",
+                term_barrett_desc: "ਐਸਿਡ ਰਿਫਲਕਸ ਕਾਰਨ ਠੋਡੀ ਦੇ ਸੈੱਲਾਂ ਵਿੱਚ ਬਦਲਾਅ। ਨਿਗਰਾਨੀ ਦੀ ਲੋੜ ਹੈ।",
+                term_crohn_title: "ਕਰੋਹਨ ਦੀ ਬਿਮਾਰੀ",
+                term_crohn_desc: "ਪਾਚਨ ਤੰਤਰ ਦੀ ਲੰਬੇ ਸਮੇਂ ਦੀ ਸੋਜ।",
+                term_hernia_title: "ਹਾਈਟਸ ਹਰਨੀਆ",
+                term_hernia_desc: "ਪੇਟ ਦਾ ਕੁਝ ਹਿੱਸਾ ਛਾਤੀ ਵਿੱਚ ਚਲਾ ਜਾਂਦਾ ਹੈ। ਜਲਨ ਦਾ ਕਾਰਨ ਬਣਦਾ ਹੈ।",
+                term_coeliac_title: "ਸੀਲੀਏਕ ਰੋਗ",
+                term_coeliac_desc: "ਗਲੂਟਨ ਤੋਂ ਐਲਰਜੀ। ਬਾਇਓਪਸੀ ਦੁਆਰਾ ਪੁਸ਼ਟੀ ਕੀਤੀ ਜਾਂਦੀ ਹੈ।",
+                term_ring_title: "ਸ਼ੈਟਜ਼ਕੀ ਰਿੰਗ",
+                term_ring_desc: "ਠੋਡੀ ਦਾ ਤੰਗ ਹੋਣਾ। ਨਿਗਲਣ ਵਿੱਚ ਮੁਸ਼ਕਲ ਹੋ ਸਕਦੀ ਹੈ।",
+                term_ulcer_title: "ਅਲਸਰ",
+                term_ulcer_desc: "ਪੇਟ ਵਿੱਚ ਜ਼ਖਮ। ਅਕਸਰ ਬੈਕਟੀਰੀਆ ਜਾਂ ਦਵਾਈਆਂ ਕਾਰਨ।",
+
                 info_biopsy_title: "ਬਾਇਓਪਸੀ ਦੇ ਨਮੂਨੇ",
                 info_biopsy_text: "ਨਤੀਜੇ 2-6 ਹਫ਼ਤੇ ਲੈਂਦੇ ਹਨ। ਤੁਹਾਡਾ ਡਾਕਟਰ ਸੰਪਰਕ ਕਰੇਗਾ।",
                 info_polyp_title: "ਪੌਲੀਪ ਕਲਿੱਪ",
@@ -753,6 +898,28 @@
                 check_hpylori: "Test H. Pylori",
                 check_banding: "Ligatură",
                 check_stent: "Stent",
+                // Romanian Findings
+                findings_title: "Înțelegerea Rezultatelor",
+                findings_desc: "Explicații scurte ale termenilor din raport.",
+                term_polyp_title: "Polipi",
+                term_polyp_desc: "Mici excrescențe. De obicei inofensive, dar eliminate preventiv.",
+                term_divert_title: "Diverticuloză",
+                term_divert_desc: "Mici buzunare în peretele intestinal. Foarte comun.",
+                term_ibd_title: "Boli Inflamatorii",
+                term_ibd_desc: "Inflamație cronică (Colită ulcerativă sau Crohn).",
+                term_barrett_title: "Esofag Barrett",
+                term_barrett_desc: "Modificări celulare din cauza refluxului. Necesită monitorizare.",
+                term_crohn_title: "Boala Crohn",
+                term_crohn_desc: "Inflamație cronică a tractului digestiv.",
+                term_hernia_title: "Hernie Hiatală",
+                term_hernia_desc: "Stomacul urcă în torace. Cauzează arsuri.",
+                term_coeliac_title: "Boala Celiacă",
+                term_coeliac_desc: "Intoleranță la gluten care afectează intestinul.",
+                term_ring_title: "Inel Schatzki",
+                term_ring_desc: "Îngustare a esofagului. Dificultăți la înghițire.",
+                term_ulcer_title: "Ulcere",
+                term_ulcer_desc: "Răni pe mucoasă. Cauzate adesea de bacterii sau medicamente.",
+
                 info_biopsy_title: "Probe Biopsie",
                 info_biopsy_text: "Rezultatele durează 2-6 săptămâni. Medicul vă va contacta.",
                 info_polyp_title: "Clipsuri Polipi",
@@ -824,6 +991,28 @@
                 check_hpylori: "Test H. Pylori",
                 check_banding: "Opaskowanie",
                 check_stent: "Stent",
+                // Polish Findings
+                findings_title: "Zrozumienie wyników",
+                findings_desc: "Wyjaśnienie terminów z raportu.",
+                term_polyp_title: "Polipy",
+                term_polyp_desc: "Małe zmiany. Zazwyczaj nieszkodliwe, ale usuwane profilaktycznie.",
+                term_divert_title: "Uchyłki",
+                term_divert_desc: "Małe kieszonki w jelicie. Bardzo częste.",
+                term_ibd_title: "Choroby zapalne (IBD)",
+                term_ibd_desc: "Przewlekłe zapalenie jelit (np. Leśniowskiego-Crohna).",
+                term_barrett_title: "Przełyk Barretta",
+                term_barrett_desc: "Zmiany komórkowe od refluksu. Wymaga monitorowania.",
+                term_crohn_title: "Choroba Crohna",
+                term_crohn_desc: "Przewlekły stan zapalny przewodu pokarmowego.",
+                term_hernia_title: "Przepuklina rozworu",
+                term_hernia_desc: "Żołądek przesuwa się do klatki piersiowej. Powoduje zgagę.",
+                term_coeliac_title: "Celiakia",
+                term_coeliac_desc: "Nietolerancja glutenu uszkadzająca jelita.",
+                term_ring_title: "Pierścień Schatzkiego",
+                term_ring_desc: "Zwężenie przełyku. Może utrudniać połykanie.",
+                term_ulcer_title: "Wrzody",
+                term_ulcer_desc: "Rany na błonie śluzowej. Często przez bakterie lub leki.",
+
                 info_biopsy_title: "Próbki biopsyjne",
                 info_biopsy_text: "Wyniki trwają 2–6 tygodni. Lekarz skontaktuje się z Tobą.",
                 info_polyp_title: "Klipsy po polipach",
@@ -895,6 +1084,28 @@
                 check_hpylori: "ایچ پائلوری ٹیسٹ",
                 check_banding: "بینڈنگ",
                 check_stent: "اسٹنٹ",
+                // Urdu Findings
+                findings_title: "رپورٹ کو سمجھنا",
+                findings_desc: "اینڈوسکوپی رپورٹ کی عام اصطلاحات۔",
+                term_polyp_title: "پولیپس",
+                term_polyp_desc: "چھوٹی رسولیاں۔ زیادہ تر بے ضرر ہیں لیکن احتیاطاً ہٹا دی جاتی ہیں۔",
+                term_divert_title: "ڈائیورٹیکولر بیماری",
+                term_divert_desc: "آنت میں چھوٹی تھیلیاں۔ بہت عام ہے۔ درد ہو سکتا ہے۔",
+                term_ibd_title: "آنتوں کی سوزش",
+                term_ibd_desc: "آنتوں کی دائمی سوزش یا جلن۔",
+                term_barrett_title: "بیرٹ کی غذائی نالی",
+                term_barrett_desc: "تیزابیت کی وجہ سے خلیوں میں تبدیلی۔",
+                term_crohn_title: "کرون کی بیماری",
+                term_crohn_desc: "نظام انہضام کی دائمی سوزش۔",
+                term_hernia_title: "ہرنیا",
+                term_hernia_desc: "معدہ سینے کی طرف جاتا ہے۔ جلن کا باعث بنتا ہے۔",
+                term_coeliac_title: "سیلیک بیماری",
+                term_coeliac_desc: "گندم سے الرجی۔ بایپسی سے تصدیق ہوتی ہے۔",
+                term_ring_title: "شیٹزکی رنگ",
+                term_ring_desc: "غذائی نالی کا تنگ ہونا۔ نگلنے میں دشواری۔",
+                term_ulcer_title: "السر",
+                term_ulcer_desc: "معدے کے زخم۔ اکثر بیکٹیریا یا ادویات کی وجہ سے۔",
+
                 info_biopsy_title: "بایپسی کے نمونے",
                 info_biopsy_text: "نتائج میں 2-6 ہفتے لگتے ہیں۔ آپ کا ڈاکٹر رابطہ کرے گا۔",
                 info_polyp_title: "پولیپ کلپس",
@@ -966,6 +1177,28 @@
                 check_hpylori: "Teste H. Pylori",
                 check_banding: "Ligadura",
                 check_stent: "Stent",
+                // Portuguese Findings
+                findings_title: "Entendendo o Relatório",
+                findings_desc: "Termos comuns em laudos de endoscopia.",
+                term_polyp_title: "Pólipos",
+                term_polyp_desc: "Pequenos crescimentos. Geralmente removidos para prevenir câncer.",
+                term_divert_title: "Diverticulose",
+                term_divert_desc: "Pequenas bolsas na parede do intestino. Muito comum.",
+                term_ibd_title: "Doença Inflamatória",
+                term_ibd_desc: "Inflamação crônica (Colite ou Crohn).",
+                term_barrett_title: "Esôfago de Barrett",
+                term_barrett_desc: "Alterações celulares devido ao refluxo. Requer monitoramento.",
+                term_crohn_title: "Doença de Crohn",
+                term_crohn_desc: "Inflamação crônica do trato digestivo.",
+                term_hernia_title: "Hérnia de Hiato",
+                term_hernia_desc: "Estômago sobe para o tórax. Causa refluxo.",
+                term_coeliac_title: "Doença Celíaca",
+                term_coeliac_desc: "Intolerância ao glúten. Confirmada por biópsia.",
+                term_ring_title: "Anel de Schatzki",
+                term_ring_desc: "Estreitamento do esôfago. Dificuldade para engolir.",
+                term_ulcer_title: "Úlceras",
+                term_ulcer_desc: "Feridas no revestimento. Causadas por bactérias ou remédios.",
+
                 info_biopsy_title: "Amostras de Biopsia",
                 info_biopsy_text: "Resultados levam 2-6 semanas. Seu médico entrará em contato.",
                 info_polyp_title: "Clips de Pólipos",
@@ -1037,6 +1270,28 @@
                 check_hpylori: "Prueba H. Pylori",
                 check_banding: "Bandas",
                 check_stent: "Stent",
+                // Spanish Findings
+                findings_title: "Entendiendo el Informe",
+                findings_desc: "Términos comunes en informes de endoscopia.",
+                term_polyp_title: "Pólipos",
+                term_polyp_desc: "Pequeños crecimientos. Generalmente se extirpan para prevenir cáncer.",
+                term_divert_title: "Diverticulosis",
+                term_divert_desc: "Pequeñas bolsas en el intestino. Muy común.",
+                term_ibd_title: "Enfermedad Inflamatoria",
+                term_ibd_desc: "Inflamación crónica (Colitis o Crohn).",
+                term_barrett_title: "Esófago de Barrett",
+                term_barrett_desc: "Cambios celulares por reflujo. Requiere seguimiento.",
+                term_crohn_title: "Enfermedad de Crohn",
+                term_crohn_desc: "Inflamación crónica del tracto digestivo.",
+                term_hernia_title: "Hernia de Hiato",
+                term_hernia_desc: "El estómago sube al pecho. Causa reflujo.",
+                term_coeliac_title: "Enfermedad Celíaca",
+                term_coeliac_desc: "Intolerancia al gluten. Confirmada por biopsia.",
+                term_ring_title: "Anillo de Schatzki",
+                term_ring_desc: "Estrechamiento del esófago. Dificultad para tragar.",
+                term_ulcer_title: "Úlceras",
+                term_ulcer_desc: "Heridas en el revestimiento. A menudo por bacterias o medicación.",
+
                 info_biopsy_title: "Muestras de Biopsia",
                 info_biopsy_text: "Resultados tardan 2-6 semanas. Su médico le contactará.",
                 info_polyp_title: "Clips de Pólipos",
@@ -1108,6 +1363,28 @@
                 check_hpylori: "اختبار جرثومة المعدة",
                 check_banding: "ربط البواسير",
                 check_stent: "دعامة",
+                // Arabic Findings
+                findings_title: "فهم التقرير",
+                findings_desc: "شرح مصطلحات التقرير الشائعة.",
+                term_polyp_title: "السلائل (Polijps)",
+                term_polyp_desc: "نمو صغير. غالبًا ما يتم إزالتها للوقاية من السرطان.",
+                term_divert_title: "داء الرتوج",
+                term_divert_desc: "جيوب صغيرة في الأمعاء. شائعة جدًا.",
+                term_ibd_title: "مرض التهاب الأمعاء",
+                term_ibd_desc: "التهاب مزمن (التهاب القولون أو كرون).",
+                term_barrett_title: "مريء باريت",
+                term_barrett_desc: "تغيرات في الخلايا بسبب الارتجاع.",
+                term_crohn_title: "مرض كرون",
+                term_crohn_desc: "التهاب مزمن في الجهاز الهضمي.",
+                term_hernia_title: "فتق الحجاب الحاجز",
+                term_hernia_desc: "المعدة تتحرك للأعلى نحو الصدر. تسبب الحموضة.",
+                term_coeliac_title: "الداء الزلاقي",
+                term_coeliac_desc: "حساسية من الغلوتين تضر الأمعاء.",
+                term_ring_title: "حلقة شاتزكي",
+                term_ring_desc: "تضييق في المريء. صعوبة في البلع.",
+                term_ulcer_title: "قرحة",
+                term_ulcer_desc: "جروح في البطانة. غالبًا بسبب البكتيريا أو الأدوية.",
+
                 info_biopsy_title: "عينات الخزعة",
                 info_biopsy_text: "تستغرق النتائج 2-6 أسابيع. سيتصل بك طبيبك.",
                 info_polyp_title: "مشابك السلائل",
@@ -1127,6 +1404,378 @@
                 call_emergency_btn: "اتصل بالطوارئ",
                 read_aloud: "🔊 قراءة",
                 chart_time_labels: ['0h', '30m', '1h', '2h', '4h', '12h', '24h']
+            },
+            hi: {
+                header_title: "एंडोस्कोपी रिकवरी",
+                text_size_btn: "टेक्स्ट का आकार",
+                intro_title: "प्रक्रिया के बाद की देखभाल",
+                intro_desc: "आपके पाचन तंत्र को ठीक होने में समय लगता है। इस गाइड का उपयोग करें।",
+                sedation_title: "सेडेशन स्तर",
+                sedation_desc: "यदि आपको बेहोशी की दवा दी गई थी, तो दवा आपके रक्त में लंबे समय तक रहती है।",
+                spray_label: "गले का स्प्रे",
+                spray_desc: "सुन्नता 60 मिनट में कम हो जाती है",
+                gas_label: "गैस और हवा",
+                gas_desc: "30 मिनट में सिस्टम से बाहर",
+                iv_label: "IV सेडेशन",
+                iv_desc: "24 घंटे की सावधानी",
+                protocol_title: "24 घंटे का प्रोटोकॉल",
+                protocol_desc: "IV सेडेशन वाले रोगियों के लिए आवश्यक प्रतिबंध।",
+                recovery_instruction: "रिकवरी स्थिति देखने के लिए स्लाइडर खींचें:",
+                supervision_title: "अनिवार्य पर्यवेक्षण",
+                supervision_desc: "पूरे 24 घंटों के लिए आपके साथ एक जिम्मेदार वयस्क होना चाहिए। आपको अकेले रहने की अनुमति नहीं है।",
+                status_unsafe: "असुरक्षित / बिगड़ा हुआ",
+                status_safe: "सुरक्षित / सामान्य",
+                status_woozy: "चक्कर / सावधानी",
+                rule_drive: "ड्राइविंग न करें",
+                rule_cook: "खाना न पकाएं",
+                rule_sign: "हस्ताक्षर न करें",
+                rule_alcohol: "शराब न पिएं",
+                rule_care: "बच्चों की देखभाल न करें",
+                checker_title: "लक्षण जांच",
+                checker_desc: "चुनें कि आप क्या महसूस कर रहे हैं।",
+                group_upper: "ऊपरी GI (गैस्ट्रोस्कोपी)",
+                group_lower: "निचला GI (कोलोनोस्कोपी)",
+                group_urgent: "चेतावनी के संकेत",
+                sym_throat: "गले में खराश",
+                sym_chest: "हल्की छाती में बेचैनी",
+                sym_bloat: "पेट फूलना / गैस",
+                sym_cramp: "मरोड़ / ऐंठन",
+                sym_spot: "हल्का रक्त",
+                sym_heavy: "भारी रक्तस्राव",
+                sym_severe: "गंभीर दर्द",
+                sym_fever: "बुखार / कंपकंपी",
+                result_placeholder_title: "एक लक्षण चुनें",
+                result_placeholder_desc: "सलाह शरीर रचना के अनुसार समूहीकृत है।",
+                timeline_title: "लक्षण समयरेखा",
+                report_title: "अपनी रिपोर्ट देखें",
+                report_desc: "क्या डॉक्टर ने निम्नलिखित में से किसी का उल्लेख किया?",
+                check_biopsy: "बायोप्सी",
+                check_polyp: "पॉलीप्स",
+                check_stretch: "फैलाव",
+                check_dye: "डाई",
+                check_hpylori: "H. Pylori टेस्ट",
+                check_banding: "बैंडिंग",
+                check_stent: "स्टेंट",
+                // Hindi Findings
+                findings_title: "रिपोर्ट को समझना",
+                findings_desc: "एंडोस्कोपी रिपोर्ट की सामान्य शर्तें।",
+                term_polyp_title: "पॉलीप्स",
+                term_polyp_desc: "अस्तर पर छोटे विकास। अधिकांश हानिरहित होते हैं लेकिन कैंसर से बचने के लिए हटा दिए जाते हैं।",
+                term_divert_title: "डायवर्टीकुलर रोग",
+                term_divert_desc: "आंत में छोटी थैलियां। बहुत आम है। दर्द या सूजन हो सकती है।",
+                term_ibd_title: "IBD और IBS",
+                term_ibd_desc: "आंतों की सूजन (IBD) या संवेदनशीलता (IBS)।",
+                term_barrett_title: "बैरेट्स इसोफैगस",
+                term_barrett_desc: "एसिड रिफ्लक्स के कारण भोजन नली की कोशिकाओं में बदलाव।",
+                term_crohn_title: "क्रोन रोग",
+                term_crohn_desc: "पाचन तंत्र की पुरानी सूजन।",
+                term_hernia_title: "हायटस हर्निया",
+                term_hernia_desc: "पेट का हिस्सा छाती में ऊपर चला जाता है। हार्टबर्न का कारण बनता है।",
+                term_coeliac_title: "सीलिएक रोग",
+                term_coeliac_desc: "ग्लूटेन से एलर्जी जो आंत को नुकसान पहुंचाती है।",
+                term_ring_title: "शैट्ज़की रिंग",
+                term_ring_desc: "भोजन नली का संकुचित होना। निगलने में कठिनाई।",
+                term_ulcer_title: "अल्सर",
+                term_ulcer_desc: "अस्तर पर घाव। अक्सर बैक्टीरिया या दवाओं के कारण।",
+
+                info_biopsy_title: "बायोप्सी नमूने",
+                info_biopsy_text: "परिणाम में 2-6 सप्ताह लगते हैं। आपके डॉक्टर संपर्क करेंगे।",
+                info_polyp_title: "पॉलीप क्लिप्स",
+                info_polyp_text: "छोटी धातु की क्लिप स्वाभाविक रूप से 2 सप्ताह में गिर जाएंगी।",
+                info_dilatation_title: "गले का फैलाव",
+                info_dilatation_text: "सख्त आहार: 4 घंटे ठंडा तरल, 24 घंटे गर्म नहीं, 3-5 दिन नरम आहार।",
+                info_dye_title: "नीला डाई",
+                info_dye_text: "पेशाब नीला हो सकता है। यह हानिरहित है।",
+                info_hpylori_title: "H. Pylori (CLO टेस्ट)",
+                info_hpylori_text: "परिणाम 1-2 सप्ताह में। यदि सकारात्मक है, तो एंटीबायोटिक्स की आवश्यकता है।",
+                info_banding_title: "बवासीर की बैंडिंग",
+                info_banding_text: "बैंड 10-14 दिनों में गिर जाते हैं। मामूली रक्तस्राव हो सकता है।",
+                info_stent_title: "स्टेंट डालना",
+                info_stent_text: "भोजन अच्छी तरह चबाएं। केवल नरम आहार। फिजी ड्रिंक्स मदद करते हैं।",
+                contact_unit: "यूनिट लाइन (9-5)",
+                contact_urgent: "आपातकालीन",
+                call_emergency_btn: "111 या आपातकालीन कॉल करें",
+                read_aloud: "🔊 सुनें",
+                chart_time_labels: ['0h', '30m', '1h', '2h', '4h', '12h', '24h']
+            },
+            tl: {
+                header_title: "Pagbawi sa Endoscopy",
+                text_size_btn: "Laki ng Teksto",
+                intro_title: "Pangangalaga Pagkatapos ng Pamamaraan",
+                intro_desc: "Kailangan ng panahon ng iyong tiyan upang maka-recover. Gamitin ang gabay na ito.",
+                sedation_title: "Antas ng Sedation",
+                sedation_desc: "Kung ikaw ay binigyan ng pampakalma, ang gamot ay nananatili sa dugo nang matagal.",
+                spray_label: "Spray sa Lalamunan",
+                spray_desc: "Mawawala ang pamamanhid sa loob ng 60 min",
+                gas_label: "Gas at Hangin",
+                gas_desc: "Nawawala sa sistema sa loob ng 30 min",
+                iv_label: "IV Sedation",
+                iv_desc: "24-oras na pag-iingat",
+                protocol_title: "24-Oras na Protokol",
+                protocol_desc: "Mahahalagang pagbabawal para sa mga pasyenteng na-sedate.",
+                recovery_instruction: "I-drag ang slider upang makita ang katayuan:",
+                supervision_title: "Kailangang May Kasama",
+                supervision_desc: "Dapat kang may kasamang responsableng nasa hustong gulang sa loob ng 24 oras. Bawal kang mag-isa.",
+                status_unsafe: "Hindi Ligtas / May Epekto",
+                status_safe: "Ligtas / Normal",
+                status_woozy: "Nahihilo / Mag-ingat",
+                rule_drive: "Bawal Magmaneho",
+                rule_cook: "Bawal Magluto",
+                rule_sign: "Bawal Pumirma",
+                rule_alcohol: "Bawal ang Alak",
+                rule_care: "Bawal Mag-alaga ng Bata",
+                checker_title: "Pagsusuri ng Sintomas",
+                checker_desc: "Piliin ang iyong nararamdaman.",
+                group_upper: "Upper GI (Gastroscopy)",
+                group_lower: "Lower GI (Colonoscopy)",
+                group_urgent: "Mga Babala",
+                sym_throat: "Masakit na Lalamunan",
+                sym_chest: "Paninikip ng Dibdib",
+                sym_bloat: "Kabag / Hangin",
+                sym_cramp: "Pumupulikat",
+                sym_spot: "Kaunting Dugo",
+                sym_heavy: "Malakas na Pagdurugo",
+                sym_severe: "Matinding Sakit",
+                sym_fever: "Lagnat / Panginginig",
+                result_placeholder_title: "Pumili ng sintomas",
+                result_placeholder_desc: "Ang payo ay nakahati base sa parte ng katawan.",
+                timeline_title: "Oras ng Sintomas",
+                report_title: "Suriin ang Iyong Ulat",
+                report_desc: "Nabanggit ba ng doktor ang alinman sa mga sumusunod?",
+                check_biopsy: "Biopsy",
+                check_polyp: "Polyp",
+                check_stretch: "Pag-unat",
+                check_dye: "Dye",
+                check_hpylori: "H. Pylori Test",
+                check_banding: "Banding",
+                check_stent: "Stent",
+                // Tagalog Findings
+                findings_title: "Pag-unawa sa Resulta",
+                findings_desc: "Mga karaniwang termino sa ulat ng endoscopy.",
+                term_polyp_title: "Polyp",
+                term_polyp_desc: "Maliit na tubo. Karaniwang tinatanggal upang maiwasan ang kanser.",
+                term_divert_title: "Diverticular Disease",
+                term_divert_desc: "Maliliit na bulsa sa bituka. Karaniwan ito.",
+                term_ibd_title: "IBD at IBS",
+                term_ibd_desc: "Pamamaga ng bituka (IBD) o sensitibong bituka (IBS).",
+                term_barrett_title: "Barrett's Oesophagus",
+                term_barrett_desc: "Pagbabago sa selula ng lalamunan dahil sa acid reflux.",
+                term_crohn_title: "Sakit na Crohn",
+                term_crohn_desc: "Matagalang pamamaga ng digestive tract.",
+                term_hernia_title: "Hiatus Hernia",
+                term_hernia_desc: "Ang tiyan ay umaakyat sa dibdib. Nagdudulot ng heartburn.",
+                term_coeliac_title: "Coeliac Disease",
+                term_coeliac_desc: "Reaksyon sa gluten na sumisira sa bituka.",
+                term_ring_title: "Schatzki Ring",
+                term_ring_desc: "Pagsisikip ng lalamunan. Mahirap lumunok.",
+                term_ulcer_title: "Ulcer",
+                term_ulcer_desc: "Sugat sa lining. Madalas dahil sa bacteria o gamot.",
+
+                info_biopsy_title: "Mga Sampol ng Biopsy",
+                info_biopsy_text: "Ang resulta ay tatagal ng 2-6 linggo. Kokontakin ka ng iyong doktor.",
+                info_polyp_title: "Mga Clip ng Polyp",
+                info_polyp_text: "Ang maliliit na clip ay kusa nang malalaglag sa loob ng 2 linggo.",
+                info_dilatation_title: "Pag-unat ng Lalamunan",
+                info_dilatation_text: "Mahigpit na Diyeta: 4 na oras malamig na likido, 24 oras bawal mainit, 3-5 araw malambot na pagkain.",
+                info_dye_title: "Asul na Dye",
+                info_dye_text: "Maaaring maging asul ang ihi. Ito ay ligtas.",
+                info_hpylori_title: "H. Pylori (CLO Test)",
+                info_hpylori_text: "Resulta sa 1-2 linggo. Kung positibo, kailangan ng antibiotics.",
+                info_banding_title: "Banding ng Almoranas",
+                info_banding_text: "Ang mga goma ay malalaglag sa 10-14 araw. Maaaring may kaunting dugo.",
+                info_stent_title: "Paglagay ng Stent",
+                info_stent_text: "Nguyain nang mabuti ang pagkain. Malambot na diyeta lamang.",
+                contact_unit: "Telepono ng Unit (9-5)",
+                contact_urgent: "Emergency",
+                call_emergency_btn: "Tumawag sa 111 o Emergency",
+                read_aloud: "🔊 Basahin",
+                chart_time_labels: ['0h', '30m', '1h', '2h', '4h', '12h', '24h']
+            },
+            'zh-hk': {
+                header_title: "內窺鏡檢查後護理",
+                text_size_btn: "字體大小",
+                intro_title: "術後護理",
+                intro_desc: "您的消化系統需要時間恢復。請使用此指南。",
+                sedation_title: "鎮靜程度",
+                sedation_desc: "如果您接受了鎮靜劑，藥物會在血液中停留很長時間。",
+                spray_label: "喉嚨噴霧",
+                spray_desc: "麻痺感在 60 分鐘內消退",
+                gas_label: "氣體和空氣",
+                gas_desc: "30 分鐘內排出體外",
+                iv_label: "靜脈鎮靜",
+                iv_desc: "24 小時限制",
+                protocol_title: "24 小時協議",
+                protocol_desc: "接受靜脈鎮靜病人的必要限制。",
+                recovery_instruction: "拖動滑塊查看恢復狀態：",
+                supervision_title: "必須有人陪同",
+                supervision_desc: "24 小時內必須有一位負責任的成年人陪同您。您不能獨處。",
+                status_unsafe: "不安全 / 受影響",
+                status_safe: "安全 / 正常",
+                status_woozy: "頭暈 / 小心",
+                rule_drive: "禁止駕駛",
+                rule_cook: "禁止煮食",
+                rule_sign: "禁止簽署",
+                rule_alcohol: "禁止飲酒",
+                rule_care: "禁止照顧兒童",
+                checker_title: "症狀檢查",
+                checker_desc: "選擇您的感覺。",
+                group_upper: "上消化道 (胃鏡)",
+                group_lower: "下消化道 (腸鏡)",
+                group_urgent: "警告信號",
+                sym_throat: "喉嚨痛",
+                sym_chest: "胸部不適",
+                sym_bloat: "腹脹 / 氣體",
+                sym_cramp: "痙攣 / 絞痛",
+                sym_spot: "輕微出血",
+                sym_heavy: "大量出血",
+                sym_severe: "劇烈疼痛",
+                sym_fever: "發燒 / 發冷",
+                result_placeholder_title: "選擇症狀",
+                result_placeholder_desc: "建議按解剖部位分類。",
+                timeline_title: "症狀時間線",
+                report_title: "查看您的報告",
+                report_desc: "醫生是否提到以下任何一項？",
+                check_biopsy: "活檢 (Biopsy)",
+                check_polyp: "息肉 (Polyp)",
+                check_stretch: "擴張",
+                check_dye: "染色",
+                check_hpylori: "幽門螺旋桿菌",
+                check_banding: "結紮",
+                check_stent: "支架",
+                // Cantonese Findings
+                findings_title: "了解報告結果",
+                findings_desc: "內窺鏡報告中常見術語的解釋。",
+                term_polyp_title: "息肉 (Polyps)",
+                term_polyp_desc: "內壁上的小生長物。大多數是良性的，但會被切除以預防癌症。",
+                term_divert_title: "憩室病",
+                term_divert_desc: "腸壁上的小袋。非常常見。",
+                term_ibd_title: "炎症性腸病 (IBD)",
+                term_ibd_desc: "慢性腸道炎症 (如克隆氏症、潰瘍性結腸炎)。",
+                term_barrett_title: "巴雷特食管",
+                term_barrett_desc: "由胃酸倒流引起的細胞變化。需要監測。",
+                term_crohn_title: "克隆氏症",
+                term_crohn_desc: "消化道的慢性炎症。",
+                term_hernia_title: "裂孔疝",
+                term_hernia_desc: "胃部上移至胸腔。引起胃酸倒流。",
+                term_coeliac_title: "乳糜瀉",
+                term_coeliac_desc: "對麩質的免疫反應，損害腸道。",
+                term_ring_title: "沙茨基環",
+                term_ring_desc: "食道狹窄。可能導致吞嚥困難。",
+                term_ulcer_title: "潰瘍",
+                term_ulcer_desc: "內壁上的瘡。通常由細菌或藥物引起。",
+
+                info_biopsy_title: "活檢樣本",
+                info_biopsy_text: "結果需要 2-6 週。您的醫生會聯絡您。",
+                info_polyp_title: "息肉夾",
+                info_polyp_text: "小金屬夾會在 2 週內自然脫落。",
+                info_dilatation_title: "喉嚨擴張",
+                info_dilatation_text: "嚴格飲食：4 小時冷流質，24 小時禁熱食，3-5 天軟食。",
+                info_dye_title: "藍色染料",
+                info_dye_text: "尿液可能變藍。這是無害的。",
+                info_hpylori_title: "幽門螺旋桿菌 (CLO 測試)",
+                info_hpylori_text: "1-2 週出結果。如呈陽性，需服用抗生素。",
+                info_banding_title: "痔瘡結紮",
+                info_banding_text: "橡皮筋會在 10-14 天內脫落。可能有輕微出血。",
+                info_stent_title: "支架置入",
+                info_stent_text: "徹底咀嚼食物。只吃軟食。汽水有助清潔支架。",
+                contact_unit: "部門電話 (9-5)",
+                contact_urgent: "緊急情況",
+                call_emergency_btn: "致電 111 或急診",
+                read_aloud: "🔊 朗讀",
+                chart_time_labels: ['0h', '30m', '1h', '2h', '4h', '12h', '24h']
+            },
+            'zh-cn': {
+                header_title: "内窥镜检查后护理",
+                text_size_btn: "字体大小",
+                intro_title: "术后护理",
+                intro_desc: "您的消化系统需要时间恢复。请使用此指南。",
+                sedation_title: "镇静程度",
+                sedation_desc: "如果您接受了镇静剂，药物会在血液中停留很长时间。",
+                spray_label: "喉咙喷雾",
+                spray_desc: "麻痹感在 60 分钟内消退",
+                gas_label: "气体和空气",
+                gas_desc: "30 分钟内排出体外",
+                iv_label: "静脉镇静",
+                iv_desc: "24 小时限制",
+                protocol_title: "24 小时协议",
+                protocol_desc: "接受静脉镇静病人的必要限制。",
+                recovery_instruction: "拖动滑块查看恢复状态：",
+                supervision_title: "必须有人陪同",
+                supervision_desc: "24 小时内必须有一位负责任的成年人陪同您。您不能独处。",
+                status_unsafe: "不安全 / 受影响",
+                status_safe: "安全 / 正常",
+                status_woozy: "头晕 / 小心",
+                rule_drive: "禁止驾驶",
+                rule_cook: "禁止煮食",
+                rule_sign: "禁止签署",
+                rule_alcohol: "禁止饮酒",
+                rule_care: "禁止照顾儿童",
+                checker_title: "症状检查",
+                checker_desc: "选择您的感觉。",
+                group_upper: "上消化道 (胃镜)",
+                group_lower: "下消化道 (肠镜)",
+                group_urgent: "警告信号",
+                sym_throat: "喉咙痛",
+                sym_chest: "胸部不适",
+                sym_bloat: "腹胀 / 气体",
+                sym_cramp: "痉挛 / 绞痛",
+                sym_spot: "轻微出血",
+                sym_heavy: "大量出血",
+                sym_severe: "剧烈疼痛",
+                sym_fever: "发烧 / 发冷",
+                result_placeholder_title: "选择症状",
+                result_placeholder_desc: "建议按解剖部位分类。",
+                timeline_title: "症状时间线",
+                report_title: "查看您的报告",
+                report_desc: "医生是否提到以下任何一项？",
+                check_biopsy: "活检 (Biopsy)",
+                check_polyp: "息肉 (Polyp)",
+                check_stretch: "扩张",
+                check_dye: "染色",
+                check_hpylori: "幽门螺杆菌",
+                check_banding: "结扎",
+                check_stent: "支架",
+                // Mandarin Findings
+                findings_title: "了解报告结果",
+                findings_desc: "内窥镜报告中常见术语的解释。",
+                term_polyp_title: "息肉 (Polyps)",
+                term_polyp_desc: "内壁上的小生长物。大多数是良性的，但会被切除以预防癌症。",
+                term_divert_title: "憩室病",
+                term_divert_desc: "肠壁上的小袋。非常常见。",
+                term_ibd_title: "炎症性肠病 (IBD)",
+                term_ibd_desc: "慢性肠道炎症 (如克罗恩病、溃疡性结肠炎)。",
+                term_barrett_title: "巴雷特食管",
+                term_barrett_desc: "由胃酸倒流引起的细胞变化。需要监测。",
+                term_crohn_title: "克罗恩病",
+                term_crohn_desc: "消化道的慢性炎症。",
+                term_hernia_title: "裂孔疝",
+                term_hernia_desc: "胃部上移至胸腔。引起胃酸倒流。",
+                term_coeliac_title: "乳糜泻",
+                term_coeliac_desc: "对麸质的免疫反应，损害肠道。",
+                term_ring_title: "沙茨基环",
+                term_ring_desc: "食道狭窄。可能导致吞咽困难。",
+                term_ulcer_title: "溃疡",
+                term_ulcer_desc: "内壁上的疮。通常由细菌或药物引起。",
+
+                info_biopsy_title: "活检样本",
+                info_biopsy_text: "结果需要 2-6 周。您的医生会联络您。",
+                info_polyp_title: "息肉夹",
+                info_polyp_text: "小金属夹会在 2 周内自然脱落。",
+                info_dilatation_title: "喉咙扩张",
+                info_dilatation_text: "严格饮食：4 小时冷流质，24 小时禁热食，3-5 天软食。",
+                info_dye_title: "蓝色染料",
+                info_dye_text: "尿液可能变蓝。这是无害的。",
+                info_hpylori_title: "幽门螺杆菌 (CLO 测试)",
+                info_hpylori_text: "1-2 周出结果。如呈阳性，需服用抗生素。",
+                info_banding_title: "痔疮结扎",
+                info_banding_text: "橡皮筋会在 10-14 天内脱落。可能有轻微出血。",
+                info_stent_title: "支架置入",
+                info_stent_text: "彻底咀嚼食物。只吃软食。汽水有助清洁支架。",
+                contact_unit: "部门电话 (9-5)",
+                contact_urgent: "紧急情况",
+                call_emergency_btn: "致电 111 或急诊",
+                read_aloud: "🔊 朗读",
+                chart_time_labels: ['0h', '30m', '1h', '2h', '4h', '12h', '24h']
             }
         };
 
@@ -1136,6 +1785,10 @@
             currentLang = lang;
             const texts = dictionary[lang];
             
+            // Handle Font Switching
+            document.body.className = document.body.className.replace(/lang-[\w-]+/g, ''); // Reset lang classes
+            document.body.classList.add(`lang-${lang}`);
+
             // Handle Right-to-Left for Urdu and Arabic
             if(lang === 'ur' || lang === 'ar') {
                 document.body.dir = 'rtl';
@@ -1155,9 +1808,6 @@
 
             // Re-render slider text
             updateRecoveryState(document.getElementById('recoverySlider').value);
-            
-            // Refresh charts with new language labels
-            updateCharts(lang);
         }
 
         function toggleTextSize() {
@@ -1208,56 +1858,6 @@
             updateCard('status-iv', state.iv);
         }
 
-        // --- 2. Duration Chart ---
-        const ctxDuration = document.getElementById('durationChart').getContext('2d');
-        let durationChart;
-
-        function initDurationChart(lang) {
-            if (durationChart) durationChart.destroy();
-            const d = dictionary[lang];
-            const isDark = document.documentElement.classList.contains('dark');
-            const textColor = isDark ? '#9ca3af' : '#6b7280';
-            
-            // Helper to format long labels
-            function formatLabels(labels) {
-                return labels.map(label => label.split(' '));
-            }
-
-            durationChart = new Chart(ctxDuration, {
-                type: 'bar',
-                data: {
-                    labels: formatLabels([d.sym_throat, d.sym_bloat, d.sym_cramp, d.sym_spot, d.check_dye]),
-                    datasets: [{
-                        label: 'Hours',
-                        data: [48, 24, 24, 48, 24],
-                        backgroundColor: ['#FDA4AF', '#7DD3FC', '#93C5FD', '#FCA5A5', '#67E8F9'],
-                        borderRadius: 8,
-                        barThickness: 30
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { 
-                            grid: { display: false },
-                            ticks: { color: textColor }
-                        },
-                        x: { 
-                            grid: { display: false },
-                            ticks: { color: textColor }
-                        }
-                    }
-                }
-            });
-        }
-
-        function updateCharts(lang) {
-            // Note: Recovery Chart (Line) removed in favor of Slider
-            initDurationChart(lang);
-        }
-
         // --- 3. Anatomical Symptom Logic with Multi-Language ---
         
         const symptomKeys = {
@@ -1269,7 +1869,11 @@
                 ro: { title: 'Durere de gât', text: 'Endoscopul poate zgâria gâtul. Se simte ca o răceală. Trece în 48 de ore. Mâncați alimente moi și reci.' },
                 pt: { title: 'Garganta pós-gastroscopia', text: 'Pode parecer um resfriado. Passará em 48 horas. Coma alimentos frios e macios.' },
                 es: { title: 'Garganta Post-Gastroscopia', text: 'El endoscopio puede raspar la garganta. Se siente como un resfriado. Pasará en 48 horas. Coma alimentos blandos y fríos.' },
-                ar: { title: 'حلق بعد التنظير', text: 'قد يخدش المنظار الحلق. يشبه بداية الزكام. سيستقر خلال 48 ساعة. تناول أطعمة باردة ولينة.' }
+                ar: { title: 'حلق بعد التنظير', text: 'قد يخدش المنظار الحلق. يشبه بداية الزكام. سيستقر خلال 48 ساعة. تناول أطعمة باردة ولينة.' },
+                hi: { title: 'गैस्ट्रोस्कोपी के बाद गला', text: 'स्कोप गले को खरोंच सकता है। यह सर्दी की शुरुआत जैसा लगता है। 48 घंटे में ठीक हो जाएगा। ठंडा और नरम भोजन खाएं।' },
+                tl: { title: 'Lalamunan Pagkatapos ng Gastroscopy', text: 'Maaaring magasgas ng scope ang lalamunan. Parang magkakasipon. Mawawala sa 48 oras. Kumain ng malambot at malamig.' },
+                'zh-hk': { title: '胃鏡後喉嚨不適', text: '內窺鏡可能會刮傷喉嚨後部。感覺像感冒初期。48 小時內會消退。請吃冷軟食物。' },
+                'zh-cn': { title: '胃镜后喉咙不适', text: '内窥镜可能会刮伤喉咙后部。感觉像感冒初期。48 小时内会消退。请吃冷软食物。' }
             },
             'chest_pain': { icon: '🟢', color: 'text-emerald-700 dark:text-emerald-400', type: 'normal',
                 en: { title: 'Mild Chest Discomfort', text: 'Burping or pressure is common due to air used to inflate the stomach. It should resolve if you walk around.' },
@@ -1279,7 +1883,11 @@
                 ro: { title: 'Disconfort toracic', text: 'Presiunea este normală din cauza aerului. Ar trebui să treacă dacă vă plimbați.' },
                 pt: { title: 'Desconforto no peito', text: 'Arrotos ou pressão são comuns devido ao ar. Deve passar se você caminhar.' },
                 es: { title: 'Molestia en el pecho', text: 'Eructos o presión son comunes debido al aire. Debería pasar si camina.' },
-                ar: { title: 'انزعاج خفيف في الصدر', text: 'التجشؤ أو الضغط شائع بسبب الهواء. يجب أن يزول إذا مشيت قليلاً.' }
+                ar: { title: 'انزعاج خفيف في الصدر', text: 'التجشؤ أو الضغط شائع بسبب الهواء. يجب أن يزول إذا مشيت قليلاً.' },
+                hi: { title: 'छाती में हल्की बेचैनी', text: 'हवा के कारण डकार या दबाव आम है। टहलने से यह ठीक हो जाना चाहिए।' },
+                tl: { title: 'Kaunting Sakit sa Dibdib', text: 'Ang pagdighay o bigat ay karaniwan dahil sa hangin. Mawawala ito kung ikaw ay maglalakad-lakad.' },
+                'zh-hk': { title: '輕微胸部不適', text: '由於注入氣體，打嗝或壓迫感很常見。走動一下應該會緩解。' },
+                'zh-cn': { title: '轻微胸部不适', text: '由于注入气体，打嗝或压迫感很常见。走动一下应该会缓解。' }
             },
             'bloating': { icon: '🟢', color: 'text-emerald-700 dark:text-emerald-400', type: 'normal',
                 en: { title: 'Trapped Wind', text: 'We pump CO2/Air into the bowel. This causes bloating. Move around and pass wind. Do not be embarrassed.' },
@@ -1289,7 +1897,11 @@
                 ro: { title: 'Balonare', text: 'Pompăm aer în intestin. Mișcați-vă și eliminați gazele. Nu vă jenați.' },
                 pt: { title: 'Gases Presos', text: 'Bombeamos ar para o intestino. Isso causa inchaço. Movimente-se e libere gases.' },
                 es: { title: 'Gases Atrapados', text: 'Bombeamos aire en el intestino. Esto causa hinchazón. Muévase y libere gases.' },
-                ar: { title: 'غازات محبوسة', text: 'نضخ الهواء في الأمعاء. هذا يسبب الانتفاخ. تحرك وأخرج الغازات. لا تشعر بالحرج.' }
+                ar: { title: 'غازات محبوسة', text: 'نضخ الهواء في الأمعاء. هذا يسبب الانتفاخ. تحرك وأخرج الغازات. لا تشعر بالحرج.' },
+                hi: { title: 'गैस', text: 'हम आंत में हवा पंप करते हैं। इससे पेट फूलता है। घूमें और गैस पास करें। शर्मिंदा न हों।' },
+                tl: { title: 'Kabag', text: 'Nagbobomba kami ng hangin sa bituka. Ito ay nagdudulot ng kabag. Gumalaw at ilabas ang hangin. Huwag mahiya.' },
+                'zh-hk': { title: '積氣', text: '我們向腸道注入氣體，導致腹脹。多走動並排氣。不用感到尷尬。' },
+                'zh-cn': { title: '积气', text: '我们向肠道注入气体，导致腹胀。多走动并排气。不用感到尴尬。' }
             },
             'cramps': { icon: '🟢', color: 'text-emerald-700 dark:text-emerald-400', type: 'normal',
                 en: { title: 'Bowel Spasms', text: 'The bowel may spasm after being stretched. Feels like period pain. Warm water or peppermint tea helps.' },
@@ -1299,7 +1911,11 @@
                 ro: { title: 'Crampe intestinale', text: 'Se simte ca durerea menstruală. Apa caldă sau ceaiul de mentă ajută.' },
                 pt: { title: 'Espasmos intestinais', text: 'Parece cólica menstrual. Água morna ou chá de hortelã ajudam.' },
                 es: { title: 'Espasmos intestinales', text: 'Se siente como dolor menstrual. Agua tibia o té de menta ayudan.' },
-                ar: { title: 'تشنجات معوية', text: 'قد تتشنج الأمعاء. يشبه ألم الدورة الشهرية. الماء الدافئ أو شاي النعناع يساعد.' }
+                ar: { title: 'تشنجات معوية', text: 'قد تتشنج الأمعاء. يشبه ألم الدورة الشهرية. الماء الدافئ أو شاي النعناع يساعد.' },
+                hi: { title: 'आंतों में ऐंठन', text: 'खिंचाव के बाद ऐंठन हो सकती है। मासिक धर्म के दर्द जैसा लगता है। गर्म पानी या पुदीने की चाय मदद करती है।' },
+                tl: { title: 'Pumupulikat na Bituka', text: 'Maaaring pumulikat ang bituka. Parang sakit ng puson. Makakatulong ang maligamgam na tubig.' },
+                'zh-hk': { title: '腸道痙攣', text: '腸道伸展後可能會痙攣。感覺像經痛。暖水或薄荷茶會有幫助。' },
+                'zh-cn': { title: '肠道痉挛', text: '肠道伸展后可能会痉挛。感觉像经痛。暖水或薄荷茶会有帮助。' }
             },
             'bleeding_mild': { icon: '🟠', color: 'text-amber-700 dark:text-amber-400', type: 'monitor',
                 en: { title: 'Minor Spotting', text: 'A few drops of blood on tissue is normal, especially after polyps. Stops within 24 hours.' },
@@ -1309,7 +1925,11 @@
                 ro: { title: 'Sângerare ușoară', text: 'Câteva picături de sânge sunt normale. Se oprește în 24 de ore.' },
                 pt: { title: 'Pequeno sangramento', text: 'Algumas gotas de sangue são normais. Para em 24 horas.' },
                 es: { title: 'Pequeño sangrado', text: 'Unas gotas de sangre son normales. Se detiene en 24 horas.' },
-                ar: { title: 'نزيف خفيف', text: 'بضع قطرات من الدم طبيعية. تتوقف خلال 24 ساعة.' }
+                ar: { title: 'نزيف خفيف', text: 'بضع قطرات من الدم طبيعية. تتوقف خلال 24 ساعة.' },
+                hi: { title: 'मामूली धब्बे', text: 'टिशू पर खून की कुछ बूंदें सामान्य हैं। 24 घंटे में रुक जाता है।' },
+                tl: { title: 'Kaunting Dugo', text: 'Ang ilang patak ng dugo sa tissue ay normal. Titigil ito sa loob ng 24 oras.' },
+                'zh-hk': { title: '輕微出血', text: '紙巾上有幾滴血是正常的，特別是切除息肉後。24 小時內會停止。' },
+                'zh-cn': { title: '轻微出血', text: '纸巾上有几滴血是正常的，特别是切除息肉后。24 小时内会停止。' }
             },
             'bleeding_heavy': { icon: '🚨', color: 'text-rose-700 dark:text-rose-400', type: 'urgent',
                 en: { title: 'SIGNIFICANT BLEEDING', text: 'Passing clots, dark stools, or >1 egg-cup of blood? Seek help immediately.' },
@@ -1319,7 +1939,11 @@
                 ro: { title: 'SÂNGERARE ABUNDENTĂ', text: 'Cheaguri, scaun negru sau mult sânge? Căutați ajutor imediat.' },
                 pt: { title: 'SANGRAMENTO INTENSO', text: 'Coágulos, fezes escuras ou muito sangue? Procure ajuda imediatamente.' },
                 es: { title: 'SANGRADO INTENSO', text: '¿Coágulos, heces oscuras o mucha sangre? Busque ayuda inmediatamente.' },
-                ar: { title: 'نزيف حاد', text: 'جلطات، براز داكن، أو دم كثير؟ اطلب المساعدة فوراً.' }
+                ar: { title: 'نزيف حاد', text: 'جلطات، براز داكن، أو دم كثير؟ اطلب المساعدة فوراً.' },
+                hi: { title: 'महत्वपूर्ण रक्तस्राव', text: 'थक्के, काला मल या बहुत अधिक खून? तुरंत मदद लें।' },
+                tl: { title: 'MALAKAS NA PAGDURUGO', text: 'May namuong dugo, maitim na dumi, o maraming dugo? Humingi agad ng tulong.' },
+                'zh-hk': { title: '嚴重出血', text: '排出血塊、黑便或大量出血？請立即求醫。' },
+                'zh-cn': { title: '严重出血', text: '排出血块、黑便或大量出血？请立即求医。' }
             },
             'severe_pain': { icon: '🚨', color: 'text-rose-700 dark:text-rose-400', type: 'urgent',
                 en: { title: 'PERFORATION RISK', text: 'Severe, continuous pain + rigid tummy is an emergency. Go to A&E.' },
@@ -1329,7 +1953,11 @@
                 ro: { title: 'RISC DE PERFORAȚIE', text: 'Durere severă, continuă + burtă tare este o urgență. Mergeți la spital.' },
                 pt: { title: 'RISCO DE PERFURAÇÃO', text: 'Dor severa e contínua + barriga rígida é emergência. Vá ao hospital.' },
                 es: { title: 'RIESGO DE PERFORACIÓN', text: 'Dolor severo y continuo + barriga rígida es emergencia. Vaya al hospital.' },
-                ar: { title: 'خطر انثقاب', text: 'ألم شديد ومستمر + بطن صلب حالة طارئة. اذهب للمستشفى.' }
+                ar: { title: 'خطر انثقاب', text: 'ألم شديد ومستمر + بطن صلب حالة طارئة. اذهب للمستشفى.' },
+                hi: { title: 'छिद्रण जोखिम', text: 'गंभीर, लगातार दर्द + सख्त पेट एक आपात स्थिति है। अस्पताल जाएं।' },
+                tl: { title: 'PANGANIB NG PAGBUTAS', text: 'Matinding tuloy-tuloy na sakit + matigas na tiyan ay emergency. Pumunta sa ospital.' },
+                'zh-hk': { title: '穿孔風險', text: '劇烈持續疼痛 + 腹部僵硬屬於緊急情況。請前往急症室。' },
+                'zh-cn': { title: '穿孔风险', text: '剧烈持续疼痛 + 腹部僵硬属于紧急情况。请前往急诊室。' }
             },
             'fever': { icon: '🚨', color: 'text-rose-700 dark:text-rose-400', type: 'urgent',
                 en: { title: 'INFECTION RISK', text: 'Shivering, shaking, or temp >38°C within 48h requires urgent assessment.' },
@@ -1339,7 +1967,11 @@
                 ro: { title: 'RISC DE INFECȚIE', text: 'Frisoane sau temp >38°C necesită evaluare urgentă.' },
                 pt: { title: 'RISCO DE INFECÇÃO', text: 'Calafrios ou febre >38°C requerem avaliação urgente.' },
                 es: { title: 'RIESGO DE INFECCIÓN', text: 'Escalofríos o fiebre >38°C requieren evaluación urgente.' },
-                ar: { title: 'خطر العدوى', text: 'قشعريرة أو حرارة >38 درجة مئوية تتطلب تقييماً عاجلاً.' }
+                ar: { title: 'خطر العدوى', text: 'قشعريرة أو حرارة >38 درجة مئوية تتطلب تقييماً عاجلاً.' },
+                hi: { title: 'संक्रमण जोखिम', text: '48 घंटे के भीतर कंपकंपी या बुखार >38°C के लिए तत्काल जांच की आवश्यकता है।' },
+                tl: { title: 'PANGANIB SA IMPEKSYON', text: 'Ang panginginig o lagnat >38°C sa loob ng 48 oras ay kailangang masuri agad.' },
+                'zh-hk': { title: '感染風險', text: '48 小時內發冷、顫抖或體溫高於 38°C 需要緊急評估。' },
+                'zh-cn': { title: '感染风险', text: '48 小时内发冷、颤抖或体温高于 38°C 需要紧急评估。' }
             },
             'vomiting': { icon: '🤮', color: 'text-rose-700 dark:text-rose-400', type: 'urgent',
                 en: { title: 'VOMITING', text: 'Persistent vomiting or vomiting blood/coffee-grounds is dangerous. Seek help immediately.' },
@@ -1349,7 +1981,11 @@
                 ro: { title: 'VĂRSĂTURI', text: 'Vărsăturile persistente sau cu sânge sunt periculoase. Căutați ajutor imediat.' },
                 pt: { title: 'VÔMITO', text: 'Vômito persistente ou com sangue é perigoso. Procure ajuda imediatamente.' },
                 es: { title: 'VÓMITOS', text: 'Los vómitos persistentes o con sangre son peligrosos. Busque ayuda inmediatamente.' },
-                ar: { title: 'القيء', text: 'القيء المستمر أو قيء الدم خطير. اطلب المساعدة فوراً.' }
+                ar: { title: 'القيء', text: 'القيء المستمر أو قيء الدم خطير. اطلب المساعدة فوراً.' },
+                hi: { title: 'उल्टी', text: 'लगातार उल्टी या खून की उल्टी खतरनाक है। तुरंत मदद लें।' },
+                tl: { title: 'PAGSUKA', text: 'Ang tuloy-tuloy na pagsuka o pagsuka ng dugo ay mapanganib. Humingi agad ng tulong.' },
+                'zh-hk': { title: '嘔吐', text: '持續嘔吐或嘔血/咖啡渣樣物質是危險的。請立即求醫。' },
+                'zh-cn': { title: '呕吐', text: '持续呕吐或呕血/咖啡渣样物质是危险的。请立即求医。' }
             },
             'breathing': { icon: '🫁', color: 'text-rose-700 dark:text-rose-400', type: 'urgent',
                 en: { title: 'BREATHING DIFFICULTY', text: 'Shortness of breath, wheezing, or chest tightness could indicate aspiration or reaction.' },
@@ -1359,7 +1995,11 @@
                 ro: { title: 'DIFICULTATE ÎN RESPIRAȚIE', text: 'Respirația scurtă sau presiunea în piept pot indica o problemă gravă.' },
                 pt: { title: 'DIFICULDADE RESPIRATÓRIA', text: 'Falta de ar ou aperto no peito pode indicar um problema grave.' },
                 es: { title: 'DIFICULTAD RESPIRATORIA', text: 'La falta de aire o la opresión en el pecho pueden indicar un problema grave.' },
-                ar: { title: 'صعوبة في التنفس', text: 'ضيق التنفس أو ضيق الصدر قد يشير إلى مشكلة خطيرة.' }
+                ar: { title: 'صعوبة في التنفس', text: 'ضيق التنفس أو ضيق الصدر قد يشير إلى مشكلة خطيرة.' },
+                hi: { title: 'सांस लेने में कठिनाई', text: 'सांस फूलना या छाती में जकड़न एक गंभीर समस्या का संकेत हो सकता है।' },
+                tl: { title: 'HIRAP SA PAGHINGA', text: 'Ang igsi ng paghinga o paninikip ng dibdib ay maaaring seryoso.' },
+                'zh-hk': { title: '呼吸困難', text: '呼吸急促、喘息或胸悶可能表示吸入異物或過敏反應。' },
+                'zh-cn': { title: '呼吸困难', text: '呼吸急促、喘息或胸闷可能表示吸入异物或过敏反应。' }
             },
             'neck': { icon: '🧣', color: 'text-rose-700 dark:text-rose-400', type: 'urgent',
                 en: { title: 'NECK SWELLING', text: 'Swelling or a "crackling" sensation under the skin (Surgical Emphysema) is a perforation sign.' },
@@ -1369,7 +2009,11 @@
                 ro: { title: 'UMFLAREA GÂTULUI', text: 'Umflarea sau senzația de "trosnituri" sub piele este un semn de perforație.' },
                 pt: { title: 'INCHAÇO NO PESCOÇO', text: 'Inchaço ou sensação de "estalo" sob a pele é sinal de perfuração.' },
                 es: { title: 'HINCHAZÓN DEL CUELLO', text: 'La hinchazón o sensación de "crujido" bajo la piel es señal de perforación.' },
-                ar: { title: 'تورم الرقبة', text: 'التورم أو الإحساس بـ "طقطقة" تحت الجلد هو علامة على الانثقاب.' }
+                ar: { title: 'تورم الرقبة', text: 'التورم أو الإحساس بـ "طقطقة" تحت الجلد هو علامة على الانثقاب.' },
+                hi: { title: 'गले में सूजन', text: 'सूजन या त्वचा के नीचे "कड़कड़ाहट" महसूस होना छिद्रण का संकेत है।' },
+                tl: { title: 'PAMAMAGA NG LEEG', text: 'Ang pamamaga o pakiramdam na may "pumuputok" sa ilalim ng balat ay senyales ng butas.' },
+                'zh-hk': { title: '頸部腫脹', text: '腫脹或皮下有「劈啪」感（皮下氣腫）是穿孔的跡象。' },
+                'zh-cn': { title: '颈部肿胀', text: '肿胀或皮下有“劈啪”感（皮下气肿）是穿孔的迹象。' }
             },
             'dysphagia': { icon: '🥣', color: 'text-rose-700 dark:text-rose-400', type: 'urgent',
                 en: { title: 'DYSPHAGIA', text: 'Severe pain when swallowing or inability to swallow saliva is an emergency.' },
@@ -1379,7 +2023,11 @@
                 ro: { title: 'DISFAGIE', text: 'Durerea severă la înghițire sau incapacitatea de a înghiți saliva este o urgență.' },
                 pt: { title: 'DISFAGIA', text: 'Dor severa ao engolir ou incapacidade de engolir saliva é emergência.' },
                 es: { title: 'DISFAGIA', text: 'El dolor severo al tragar o la incapacidad de tragar saliva es una emergencia.' },
-                ar: { title: 'عسر البلع', text: 'الألم الشديد عند البلع أو عدم القدرة على بلع اللعاب حالة طارئة.' }
+                ar: { title: 'عسر البلع', text: 'الألم الشديد عند البلع أو عدم القدرة على بلع اللعاب حالة طارئة.' },
+                hi: { title: 'निगलने में कठिनाई', text: 'निगलते समय गंभीर दर्द या लार निगलने में असमर्थता एक आपात स्थिति है।' },
+                tl: { title: 'HIRAP LUMUNOK', text: 'Ang matinding sakit sa paglunok o hindi makalunok ng laway ay emergency.' },
+                'zh-hk': { title: '吞嚥困難', text: '吞嚥時劇痛或無法吞嚥唾液屬於緊急情況。' },
+                'zh-cn': { title: '吞咽困难', text: '吞咽时剧痛或无法吞咽唾液属于紧急情况。' }
             }
         };
 
@@ -1396,7 +2044,11 @@
                 'ro': 'ro-RO',
                 'pt': 'pt-PT',
                 'es': 'es-ES',
-                'ar': 'ar-SA'
+                'ar': 'ar-SA',
+                'hi': 'hi-IN',
+                'tl': 'fil-PH', // Tagalog/Filipino
+                'zh-hk': 'zh-HK',
+                'zh-cn': 'zh-CN'
             };
 
             utterance.lang = localeMap[currentLang] || 'en-GB';
@@ -1449,13 +2101,12 @@
 
         // Initialize
         updateRecoveryState(0);
-        updateCharts('en');
 
-        // Watch for Dark Mode Changes to update charts
+        // Watch for Dark Mode Changes to update charts (removed charts, keeping observer for future)
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.attributeName === "class") {
-                    updateCharts(currentLang);
+                    // Re-render handled by CSS variables generally, but kept for JS specific logic if needed
                 }
             });
         });
